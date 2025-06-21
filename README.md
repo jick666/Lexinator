@@ -1,3 +1,3 @@
-# experimental-js-lexer
+# Lexinator
 
 A modular, adaptive, JavaScript lexer.
