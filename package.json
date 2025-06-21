@@ -12,8 +12,8 @@
     "prepare": "husky",
     "gentree": "node ./.github/workflows/scripts/genTree.js",
     "tree": "npm run gentree",
-	"diagnostics": "node ./src/utils/diagnostics.js",	
-	"diag": "npm run diagnostics"
+	"diag": "node ./src/utils/diagnostics.js",	
+	"diagostics": "npm run diagnostics"
   },
   "keywords": [
     "lexer",
