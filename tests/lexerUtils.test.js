@@ -1,5 +1,5 @@
 import { CharStream } from '../src/lexer/CharStream.js';
-import { readUnicodeEscape, consumeIdentifierLike, readDigitsWithUnderscores, readNumberLiteral } from '../src/lexer/utils.js';
+import { readUnicodeEscape, consumeIdentifierLike, readDigitsWithUnderscores, readNumberLiteral, consumeKeyword } from '../src/lexer/utils.js';
 
 describe('lexer utils', () => {
   test('readUnicodeEscape parses escapes', () => {
@@ -43,5 +43,61 @@ describe('lexer utils', () => {
   test('readNumberLiteral enforces fraction when required', () => {
     const stream = new CharStream('1.');
     expect(readNumberLiteral(stream, 0, true)).toBeNull();
+  });
+  test('readUnicodeEscape rejects too many hex digits', () => {
+    const stream = new CharStream('\\u{1234567}');
+    expect(readUnicodeEscape(stream)).toBeNull();
+  });
+
+  test('readUnicodeEscape rejects missing closing brace', () => {
+    const stream = new CharStream('\\u{41');
+    expect(readUnicodeEscape(stream)).toBeNull();
+  });
+
+  test('readDigitsWithUnderscores tracks ending underscore', () => {
+    const stream = new CharStream('1_');
+    const res = readDigitsWithUnderscores(stream, 0);
+    expect(res).toEqual({ value: '1_', underscoreSeen: true, lastUnderscore: true });
+  });
+
+  test('readDigitsWithUnderscores accepts leading underscore', () => {
+    const stream = new CharStream('_1');
+    const res = readDigitsWithUnderscores(stream, 0);
+    expect(res).toEqual({ value: '_1', underscoreSeen: true, lastUnderscore: false });
+  });
+
+  test('readNumberLiteral handles trailing dot without fraction', () => {
+    const stream = new CharStream('1.');
+    const res = readNumberLiteral(stream, 0);
+    expect(res.value).toBe('1.');
+    expect(res.ch).toBeNull();
+  });
+
+  test('readNumberLiteral returns next char after digits', () => {
+    const stream = new CharStream('1.2a');
+    const res = readNumberLiteral(stream, 0);
+    expect(res.value).toBe('1.2');
+    expect(res.ch).toBe('a');
+  });
+
+  test('consumeKeyword consumes keyword at start', () => {
+    const stream = new CharStream('let x');
+    const pos = consumeKeyword(stream, 'let');
+    expect(pos.index).toBe(3);
+    expect(stream.index).toBe(3);
+  });
+
+  test('consumeKeyword rejects when next char is ident', () => {
+    const stream = new CharStream('letx');
+    expect(consumeKeyword(stream, 'let')).toBeNull();
+  });
+
+  test('consumeKeyword respects checkPrev', () => {
+    const stream = new CharStream('alet');
+    stream.index = 1;
+    expect(consumeKeyword(stream, 'let')).toBeNull();
+    stream.index = 1;
+    const pos = consumeKeyword(stream, 'let', { checkPrev: false });
+    expect(pos.index).toBe(4);
   });
 });
