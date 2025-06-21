@@ -17,6 +17,11 @@ describe('lexer utils', () => {
     expect(consumeIdentifierLike(stream, { allowEscape: true })).toBe('Abc');
   });
 
+  test('consumeIdentifierLike handles escapes in the middle', () => {
+    const stream = new CharStream('A\\u0042c');
+    expect(consumeIdentifierLike(stream, { allowEscape: true })).toBe('ABc');
+  });
+
   test('readDigitsWithUnderscores parses underscores', () => {
     const stream = new CharStream('1_000');
     const res = readDigitsWithUnderscores(stream, 0);

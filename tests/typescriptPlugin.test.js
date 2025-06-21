@@ -30,3 +30,18 @@ test('TypeScriptPlugin parses generic parameters without JSX', () => {
   const generic = engine.nextToken();
   expect(generic.type).toBe('TYPE_PARAMETER');
 });
+
+test('TSGenericParameterReader handles nested generics', () => {
+  registerPlugin(TypeScriptPlugin);
+  const engine = new LexerEngine(new CharStream('Map<Map<string>>'));
+  engine.nextToken(); // IDENTIFIER
+  const tok = engine.nextToken();
+  expect(tok.value).toBe('<Map<string>>');
+});
+
+test('TSGenericParameterReader returns null when not at <', async () => {
+  registerPlugin(TypeScriptPlugin);
+  const { TSGenericParameterReader } = await import('../src/plugins/typescript/TypeScriptPlugin.js');
+  const stream = new CharStream('A');
+  expect(TSGenericParameterReader(stream, () => {})).toBeNull();
+});

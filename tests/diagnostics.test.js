@@ -1,14 +1,20 @@
 import { jest } from '@jest/globals';
 import { fileURLToPath } from 'url';
 import { spawnSync } from 'child_process';
+import fs from 'fs';
+import readline from 'readline';
 
-async function runDiagnostics(args = [], env = {}) {
+async function runDiagnostics(args = [], env = {}, stdinTTY = true, exitFn) {
   jest.resetModules();
   const diagPath = fileURLToPath(new URL('../src/utils/diagnostics.js', import.meta.url));
   const originalArgv = process.argv.slice();
   const originalEnv = { ...process.env };
+  const origTTY = process.stdin.isTTY;
+  const origExit = process.exit;
   process.argv = [process.execPath, diagPath, ...args];
   Object.assign(process.env, env);
+  process.stdin.isTTY = stdinTTY;
+  if (exitFn) process.exit = exitFn;
 
   const logs = [];
   const originalLog = console.log;
@@ -19,6 +25,8 @@ async function runDiagnostics(args = [], env = {}) {
   console.log = originalLog;
   process.argv = originalArgv;
   process.env = originalEnv;
+  process.stdin.isTTY = origTTY;
+  if (exitFn) process.exit = origExit;
   return logs;
 }
 
@@ -41,6 +49,13 @@ test('diagnostics CLI shows help and exits', () => {
   expect(stdout).toContain('usage: diagnostics.js');
 });
 
+test('diagnostics CLI help path via import', async () => {
+  const exitSpy = jest.fn();
+  const logs = await runDiagnostics(['--help'], {}, true, exitSpy);
+  expect(exitSpy).toHaveBeenCalledWith(0);
+  expect(logs.join('')).toContain('usage: diagnostics.js');
+});
+
 test('diagnostics CLI prints debug indices', async () => {
   const logs = await runDiagnostics(['--debug', 'let x=1;']);
   expect(logs[0].startsWith('0')).toBe(true);
@@ -49,4 +64,38 @@ test('diagnostics CLI prints debug indices', async () => {
 test('diagnostics CLI shows trivia output', async () => {
   const logs = await runDiagnostics(['--trivia', '  x;']);
   expect(logs.some(l => l.includes('lead→'))).toBe(true);
+});
+
+test('diagnostics CLI reads from stdin when not TTY', async () => {
+  jest.spyOn(fs, 'readFileSync').mockReturnValue('let y=2;\n');
+  const logs = await runDiagnostics([], {}, false);
+  fs.readFileSync.mockRestore();
+  expect(logs.some(l => l.includes('IDENTIFIER(y)'))).toBe(true);
+});
+
+test('diagnostics CLI repl mode processes input', async () => {
+  const events = {};
+  jest.spyOn(readline, 'createInterface').mockReturnValue({
+    setPrompt: jest.fn(),
+    prompt: jest.fn(),
+    on: (ev, cb) => { events[ev] = cb; }
+  });
+  const exitSpy = jest.spyOn(process, 'exit').mockImplementation(() => {});
+  const logs = await runDiagnostics(['--repl']);
+  events.line('let z=3;');
+  events.close();
+  expect(logs.some(l => l.includes('KEYWORD(let)'))).toBe(true);
+  expect(exitSpy).toHaveBeenCalled();
+  readline.createInterface.mockRestore();
+  exitSpy.mockRestore();
+});
+
+test('diagnostics CLI reports potential issues', async () => {
+  const logs = await runDiagnostics(['(']);
+  expect(logs.some(l => l.includes('potential issues'))).toBe(true);
+});
+
+test('diagnostics CLI logs mode transitions', async () => {
+  const logs = await runDiagnostics(['do { 1 }']);
+  expect(logs.some(l => l.includes('mode transitions'))).toBe(true);
 });
