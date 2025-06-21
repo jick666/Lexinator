@@ -1,8 +1,8 @@
 name: CI
 
-# ─────────────────────────────────────────────────────────────
-#  GLOBAL CONFIG
-# ─────────────────────────────────────────────────────────────
+###############################################################################
+# GLOBAL CONFIG
+###############################################################################
 on:
   push:
     branches: [main]
@@ -15,17 +15,17 @@ permissions:
 
 env:
   NODE_LTS: 20.13.1
-  NODE_CUR: 22            # “current” channel
+  NODE_CUR: 22
   COV_THRESHOLD: 90
-  BENCH_THRESH_PCT: 10    # fail if slower by >10 %
+  BENCH_THRESH_PCT: 10
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-# ─────────────────────────────────────────────────────────────
-#  JOB: lint
-# ─────────────────────────────────────────────────────────────
+###############################################################################
+# JOB: lint
+###############################################################################
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -37,21 +37,21 @@ jobs:
           node-version: ${{ env.NODE_LTS }}
           cache: npm
 
-      - name: Install deps
-        run: npm ci --loglevel=error
+      - run: npm ci --loglevel=error
+        name: Install deps
 
-      - name: ESLint
-        run: npm run lint --if-present
+      - run: npm run lint --if-present
+        name: ESLint
 
-      - name: Commit-lint (PR only)
-        if: github.event_name == 'pull_request'
-        run: |
+      - run: |
           npx commitlint --from ${{ github.event.pull_request.base.sha }} \
                          --to   ${{ github.event.pull_request.head.sha }}
+        if: github.event_name == 'pull_request'
+        name: Commit-lint (PR only)
 
-# ─────────────────────────────────────────────────────────────
-#  JOB: test  (Node 20 LTS + 22 current)
-# ─────────────────────────────────────────────────────────────
+###############################################################################
+# JOB: test  (Node 20 LTS + 22 Current)
+###############################################################################
   test:
     needs: lint
     runs-on: ubuntu-latest
@@ -62,48 +62,45 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
           cache: npm
 
-      - name: Install
-        run: npm ci --loglevel=error
+      - run: npm ci --loglevel=error
+        name: Install
 
-      - name: Unit tests + coverage
-        run: npm test -- --coverage
+      - run: npm test -- --coverage
+        name: Unit tests + coverage
 
-      - name: Enforce coverage ≥${{ env.COV_THRESHOLD }} %
-        run: |
+      - run: |
           node -e "require('./src/utils/checkCoverage').checkCoverage(${process.env.COV_THRESHOLD})"
+        name: Enforce ≥${{ env.COV_THRESHOLD }} % coverage
 
-      - name: Upload coverage artefact
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: coverage-${{ matrix.node }}
           path: coverage
+        name: Upload coverage artefact
 
-# ─────────────────────────────────────────────────────────────
-#  JOB: bench  (micro-bench regression guard)
-# ─────────────────────────────────────────────────────────────
+###############################################################################
+# JOB: bench
+###############################################################################
   bench:
     needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_LTS }}
           cache: npm
 
-      - name: Install
-        run: npm ci --loglevel=error
+      - run: npm ci --loglevel=error
+        name: Install
 
-      - name: Run benchmark
-        run: |
-          node --expose-gc tests/benchmarks/lexer.bench.js > bench.json
+      - run: node --expose-gc tests/benchmarks/lexer.bench.js > bench.json
+        name: Run benchmark
 
       - name: Compare to baseline
         env:
@@ -111,91 +108,70 @@ jobs:
         run: |
           BASE_URL="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/main/bench.json"
           curl -sfL "$BASE_URL" -o base.json || echo '{}' > base.json
-          node <<'JS'
-          const fs = require('fs');
-          const base = JSON.parse(fs.readFileSync('base.json','utf8'));
-          const head = JSON.parse(fs.readFileSync('bench.json','utf8'));
-          const thresh = Number(process.env.BENCH_THRESH_PCT);
-          let regress=false, lines=[];
-          for(const k in head){
-            if(!base[k]) continue;
-            const delta=((head[k]-base[k])/base[k])*100;
-            if(delta>thresh) regress=true;
-            lines.push(`${k}: ${base[k].toFixed(2)} → ${head[k].toFixed(2)} ms  (${delta.toFixed(1)} %)`);
-          }
-          fs.writeFileSync('bench-report.txt', lines.join('\n'));
-          if(regress){
-            console.error('Benchmark regression detected'); process.exit(1);
-          }
-          JS
+          node tests/benchmarks/compare.js
 
-      - name: Upload bench artefacts
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: bench
           path: |
             bench.json
             bench-report.txt
+        name: Upload bench artefacts
 
-# ─────────────────────────────────────────────────────────────
-#  JOB: comment (PR decoration)
-# ─────────────────────────────────────────────────────────────
+###############################################################################
+# JOB: comment  (PR decoration)
+###############################################################################
   comment:
     if: github.event_name == 'pull_request'
     needs: [test, bench]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
-        with:
-          name: coverage-${{ env.NODE_LTS }}
-          path: cov
+        with: {name: coverage-${{ env.NODE_LTS }}, path: cov}
 
       - uses: actions/download-artifact@v4
-        with:
-          name: bench
-          path: bench
+        with: {name: bench, path: bench}
 
-      - name: Post PR summary
-        uses: marocchino/sticky-pull-request-comment@v2
+      - uses: marocchino/sticky-pull-request-comment@v2
         with:
           path: |
             cov/coverage-summary.json
             bench/bench-report.txt
           header: "CI summary"
+        name: Post PR summary
 
-# ─────────────────────────────────────────────────────────────
-#  JOB: release  (GitHub-only semantic-release)
-# ─────────────────────────────────────────────────────────────
+###############################################################################
+# JOB: release  (semantic-release → GitHub only)
+###############################################################################
   release:
     needs: [lint, test, bench]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
-      contents: write     # push tags & CHANGELOG
-      packages: write     # allow future GH Packages publish
+      contents: write
+      packages:  write
+    env:
+      # semantic-release insists on GITHUB_TOKEN, so alias our PAT
+      GITHUB_TOKEN: ${{ secrets.PAT_REPO }}
+      PAT_REPO:     ${{ secrets.PAT_REPO }}
+
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_LTS }}
           cache: npm
 
-      - name: Install prod deps only
-        run: npm ci --loglevel=error --only=prod
+      - run: npm ci --loglevel=error --only=prod
+        name: Install prod deps
 
-      - name: semantic-release (GitHub only)
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_REPO }}
-        run: npx semantic-release
+      - run: npx semantic-release
+        name: semantic-release
 
       - name: Upload new bench baseline
         if: github.actor != 'github-actions[bot]'
+        env:
+          PAT_REPO: ${{ secrets.PAT_REPO }}
         run: |
-          git config user.email "ci@users.noreply.github.com"
-          git config user.name  "github-actions[bot]"
-          git switch -c bench-baseline
-          cp bench.json bench.json
-          git add bench.json
-          git commit -m "chore(ci): update benchmark baseline [skip ci]"
-          git push -f origin bench-baseline
+          ./ci/prepare-and-push.sh
+
