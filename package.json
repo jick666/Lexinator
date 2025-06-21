@@ -8,6 +8,7 @@
     "start": "node src/index.js",
     "lint": "eslint .",
     "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --config jest.config.cjs --coverage",
+	"tree": "node ./.github/workflows/scripts/genTree.js",
     "build": "echo \"Nothing to build\"",
     "prepare": "husky",
     "build:extension": "npm --prefix extension install && npm --prefix extension run build",
