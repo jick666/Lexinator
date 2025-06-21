@@ -1,4 +1,4 @@
-// src/integration/tokenUtils..js
+// src/integration/tokenUtils.js
 
 export function* tokenIterator(engine) {
   let trivia = [];
