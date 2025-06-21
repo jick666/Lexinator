@@ -7,11 +7,13 @@
   "scripts": {
     "start": "node src/index.js",
     "lint": "eslint .",
-    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --config jest.config.cjs --coverage",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config jest.config.cjs --coverage",
     "build": "echo \"Nothing to build\"",
     "prepare": "husky",
-    "gentree": "node ./.github/workflows/scripts/genTree.js",	  
-    "tree": "npm run gentree"
+    "gentree": "node ./.github/workflows/scripts/genTree.js",
+    "tree": "npm run gentree",
+	"diagnostics": "node ./src/utils/diagnostics.js",	
+	"diag": "npm run gentree"
   },
   "keywords": [
     "lexer",

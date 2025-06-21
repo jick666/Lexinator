@@ -1,58 +1,79 @@
-# Node dependencies
+# ─── Node dependencies & lockfiles ─────────────────────────────────────────────
 /node_modules/
+/package-lock.json
+/yarn.lock
+/pnpm-lock.yaml
 
-# Build output
+# ─── Build & distribution artifacts ────────────────────────────────────────────
 /dist/
 /build/
+/extension/dist/
 
-# Coverage reports
+# ─── Test coverage reports ─────────────────────────────────────────────────────
 /coverage/
 
-# Logs
+# ─── Logs ──────────────────────────────────────────────────────────────────────
 npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
 *.log
 
-# Runtime data
+# ─── Runtime data ──────────────────────────────────────────────────────────────
 pids
 *.pid
 *.seed
 *.pid.lock
 
-# Environment variables
+# ─── Environment files ─────────────────────────────────────────────────────────
 .env
 .env.*.local
 
-# IDEs and editors
+# ─── IDEs and editors ─────────────────────────────────────────────────────────
+# VS Code
 .vscode/
+/*.code-workspace
+# JetBrains
 .idea/
+/*.iml
+# Visual Studio
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 
-# OS files
+# ─── OS files ─────────────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
+ehthumbs.db
+Icon?
 
-# Mac swap files
+# ─── Swap & temporary files ────────────────────────────────────────────────────
 *.swp
+*~
 
-# Semantic-release and CI artifacts
+# ─── Husky & Git hooks ─────────────────────────────────────────────────────────
+.husky/_/
+/.husky/pre-commit
+
+# ─── Semantic-release & CI artifacts ──────────────────────────────────────────
 .semantic-release/
-.release/
+/.release/
 
-# Yarn v2+
+# ─── Yarn v2+ Plug’n’Play & cache ─────────────────────────────────────────────
 .yarn/cache/
 /.yarn/unplugged/
 /.yarn/build-state.yml
 .yarn/install-state.gz
 
-# VS Code extension
-/extension/dist/
+# ─── Extension-specific files ─────────────────────────────────────────────────
 /extension/node_modules/
+/extension/package-lock.json
 /extension/*.vsix
 /extension/experimental-js-lexer-*.tgz
 
-/extension/package-lock.json
+# ─── Miscellaneous ────────────────────────────────────────────────────────────
+# Lock files for other package managers
+npm-shrinkwrap.json
+
+# Local environment overrides
+local.env
