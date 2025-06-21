@@ -78,7 +78,7 @@ function getSnippets() {
 }
 
 /* ── helpers ─────────────────────────────────────────────────────── */
-const opLike = /^(\|\>|==?=?|!==?|<=?|>=?|[-+*/%]=?)$/;
+const opLike = /^(\|>|==?=?|!==?|<=?|>=?|[-+*/%]=?)$/;
 const fmtTok = t => {
   const base = `${t.type}(${t.value})`;
   if (t.type === 'ERROR_TOKEN' || t.type.startsWith('INVALID')) return clr('red', base);

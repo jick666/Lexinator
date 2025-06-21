@@ -13,7 +13,7 @@ export function CommentReader(stream, factory) {
     return factory('COMMENT', buf.join(''), start, stream.getPosition());
   }
 
-  /* /* … *​/ */
+  /* /* … *\/ */
   if (next === '*') {
     const buf = ['/', '*'];
     stream.advance(); stream.advance();
