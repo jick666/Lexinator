@@ -2,7 +2,8 @@ import { dirname, join, basename } from 'path';
 import { fileURLToPath } from 'url';
 import { readdirSync, readFileSync } from 'fs';
 import { performance } from 'perf_hooks';
-import { tokenize } from '../../index.js';
+// Import tokenizer from project source.
+import { tokenize } from '../../src/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
