@@ -99,3 +99,25 @@ test('diagnostics CLI logs mode transitions', async () => {
   const logs = await runDiagnostics(['do { 1 }']);
   expect(logs.some(l => l.includes('mode transitions'))).toBe(true);
 });
+
+test('diagnostics CLI reports malformed unicode identifiers', async () => {
+  const diagPath = fileURLToPath(new URL('../src/utils/diagnostics.js', import.meta.url));
+  jest.unstable_mockModule('../src/index.js', () => ({
+    tokenize: () => [{
+      type: 'IDENTIFIER',
+      value: '\uD800',
+      start: { line: 1, column: 0 },
+      end: { line: 1, column: 1 }
+    }]
+  }));
+  jest.resetModules();
+  const logs = [];
+  const originalLog = console.log;
+  console.log = (msg) => logs.push(msg);
+  const origArgv = process.argv.slice();
+  process.argv = [process.execPath, diagPath, 'dummy'];
+  await import('../src/utils/diagnostics.js');
+  console.log = originalLog;
+  process.argv = origArgv;
+  expect(logs.some(l => l.includes('malformed unicode identifiers'))).toBe(true);
+});

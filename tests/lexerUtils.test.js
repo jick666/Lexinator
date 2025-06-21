@@ -100,4 +100,24 @@ describe('lexer utils', () => {
     const pos = consumeKeyword(stream, 'let', { checkPrev: false });
     expect(pos.index).toBe(4);
   });
+
+  test('consumeIdentifierLike rejects starting digit', () => {
+    const stream = new CharStream('1abc');
+    expect(consumeIdentifierLike(stream)).toBeNull();
+  });
+
+  test('consumeIdentifierLike rejects leading hash', () => {
+    const stream = new CharStream('#foo');
+    expect(consumeIdentifierLike(stream)).toBeNull();
+  });
+
+  test('consumeIdentifierLike stops on bad escape in middle', () => {
+    const stream = new CharStream('A\\u00G0c');
+    expect(consumeIdentifierLike(stream, { allowEscape: true })).toBe('A');
+  });
+
+  test('readUnicodeEscape returns null when not starting with escape', () => {
+    const stream = new CharStream('abc');
+    expect(readUnicodeEscape(stream)).toBeNull();
+  });
 });
