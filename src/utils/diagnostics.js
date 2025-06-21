@@ -11,8 +11,8 @@
 import fs from 'fs';
 import { performance } from 'perf_hooks';
 import { createInterface } from 'readline';
-import { tokenize } from './src/index.js';
-import { LexerEngine } from './src/lexer/LexerEngine.js';
+import { tokenize } from '../index.js';
+import { LexerEngine } from '../lexer/LexerEngine.js';
 
 /* ── ANSI helper ─────────────────────────────────────────────────── */
 const clr = (c, s) =>
