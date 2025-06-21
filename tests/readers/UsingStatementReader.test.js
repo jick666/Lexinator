@@ -27,3 +27,17 @@ test("UsingStatementReader returns null inside identifier", () => {
   expect(tok).toBeNull();
   expect(stream.getPosition()).toEqual(pos);
 });
+
+test('UsingStatementReader fails for "await" not followed by whitespace', () => {
+  const stream = new CharStream('await;');
+  const tok = UsingStatementReader(stream, () => {});
+  expect(tok).toBeNull();
+  expect(stream.getPosition().index).toBe(0);
+});
+
+test('UsingStatementReader resets when await not followed by using', () => {
+  const stream = new CharStream('await foo');
+  const tok = UsingStatementReader(stream, () => {});
+  expect(tok).toBeNull();
+  expect(stream.getPosition().index).toBe(0);
+});
