@@ -19,6 +19,15 @@ export class BaseIncrementalLexer {
   }
 
   /**
+   * Push a token to the internal list and notify the callback.
+   * @param {Token} token Token to emit
+   */
+  emit(token) {
+    this.tokens.push(token);
+    this.onToken(token);
+  }
+
+  /**
    * Return all tokens produced so far.
    */
   getTokens() {

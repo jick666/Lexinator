@@ -57,8 +57,7 @@ export class BufferedIncrementalLexer extends BaseIncrementalLexer {
       }
       this.trivia = [];
 
-      this.tokens.push(token);
-      this.onToken(token);
+      this.emit(token);
     }
   }
 

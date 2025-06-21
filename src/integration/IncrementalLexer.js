@@ -16,8 +16,7 @@ export class IncrementalLexer extends BaseIncrementalLexer {
   feed(chunk) {
     this.stream.append(chunk);
     for (const token of tokenIterator(this.engine)) {
-      this.tokens.push(token);
-      this.onToken(token);
+      this.emit(token);
     }
   }
 
