@@ -13,7 +13,7 @@
     "gentree": "node ./.github/workflows/scripts/genTree.js",
     "tree": "npm run gentree",
 	"diagnostics": "node ./src/utils/diagnostics.js",	
-	"diag": "npm run gentree"
+	"diag": "npm run diagnostics"
   },
   "keywords": [
     "lexer",
