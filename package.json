@@ -1,9 +1,10 @@
 {
   "name": "Lexinator",
-  "version": "1.0",
+  "version": "1.0.0",
   "description": "A modular, adaptive, experimental JavaScript lexer.",
   "main": "src/index.js",
   "type": "module",
+  "packageManager": "yarn@4.9.2",
   "scripts": {
     "start": "node src/index.js",
     "lint": "eslint .",
@@ -11,10 +12,10 @@
     "build": "echo \"Nothing to build\"",
     "prepare": "husky",
     "gentree": "node ./.github/workflows/scripts/genTree.js",
-    "tree": "npm run gentree",
+    "tree": "yarn gentree",
     "diag": "node ./src/utils/diagnostics.js",
-    "diagostics": "npm run diagnostics",
-    "workflow": "npm run lint && npm test -- --coverage && node tests/benchmarks/lexer.bench.js"
+    "diagnostics": "yarn diag",
+    "workflow": "yarn lint && yarn test --coverage && node tests/benchmarks/lexer.bench.js"
   },
   "keywords": [
     "lexer",
@@ -22,8 +23,11 @@
     "codex",
     "automation"
   ],
-  "author": "",
   "license": "MIT",
+  "dependencies": {
+    "unicode-match-property-ecmascript": "^2.0.0",
+    "unicode-match-property-value-ecmascript": "^2.2.0"
+  },
   "devDependencies": {
     "@commitlint/cli": "^17.0.0",
     "@commitlint/config-conventional": "^17.0.0",
@@ -33,10 +37,6 @@
     "husky": "^9.1.7",
     "jest": "^29.0.0",
     "nock": "^13.3.0"
-  },
-  "dependencies": {
-    "unicode-match-property-ecmascript": "^2.0.0",
-    "unicode-match-property-value-ecmascript": "^2.2.0"
   },
   "engines": {
     "node": ">=18"
