@@ -42,6 +42,9 @@ The agent container sets `HUSKY=0` so Git hooks never block.
 | `npm run bench` | Micro-benchmarks (node `--expose-gc` needed). |
 | `npm run build:extension` | VS-Code syntax highlighter bundle. |
 | `npm run check:coverage` | Fail if < 90 % coverage. |
+| `npm run tree` | Generate / update `fileStructure.txt` (directory map). |
+| `npm run diag` | Diagnostics CLI (`src/utils/diagnostics.js`). |
+| `npm run workflow` | Umbrella: lint → test → coverage → bench. |
 
 ## 🤖  Codex playbook
 > *Read by the agent before each task.*
@@ -58,4 +61,27 @@ The agent container sets `HUSKY=0` so Git hooks never block.
 
 npm run lint --silent
 npm test --silent -- --coverage
-node diagnostics.js "foo |> bar"
+node src/utils/diagnostics.js "foo |> bar"
+
+## 🛫  Pre-flight (run in this exact order)
+
+1. `npm ci`
+2. `npm run tree` &rarr; skim the generated `fileStructure.txt` so you know the lay of the land.  
+3. `npm run diag "let x = 1"` to confirm the lexer still works.  
+4. `npm run workflow` (fails fast if lint/test/bench regress).  
+
+If any step fails **stop** and surface the error; do **not** open a PR.
++## 🧰  Script reference
+
+| script | location | what it does |
+|--------|----------|--------------|
+| `src/utils/diagnostics.js` | Token dump, nesting depth, trivia visualiser, REPL. Exposed as `npm run diag` and the `lexdiag` bin. |
+| `.github/workflows/scripts/genTree.js` | Writes an ASCII directory map to STDOUT **and** updates / stages `fileStructure.txt`. |
+
+### How the agent should call them
+
+# read-only inspection
+npm run tree
+
+# spot-check a lexer rule you’re editing
+npm run diag "html`<h1>${name}</h1>`"
