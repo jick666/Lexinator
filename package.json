@@ -11,9 +11,7 @@
     "build": "echo \"Nothing to build\"",
     "prepare": "husky",
     "gentree": "node ./.github/workflows/scripts/genTree.js",	  
-    "tree": "npm run gentree",
-    "build:extension": "npm --prefix extension install && npm --prefix extension run build",
-    "publish:extension": "npm --prefix extension install && npm --prefix extension run publish"
+    "tree": "npm run gentree"
   },
   "keywords": [
     "lexer",
