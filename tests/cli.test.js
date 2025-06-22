@@ -1,6 +1,7 @@
 import { jest } from '@jest/globals';
 import { fileURLToPath } from 'url';
 import { tokenize } from '../src/index.js';
+import { SIMPLE_DECL } from './utils/tokenTestUtils.js';
 
 /**
  * Helper to execute the CLI entry with mocked process args.
@@ -37,9 +38,7 @@ async function runCli(args) {
 test('CLI prints tokens array for valid input', async () => {
   const result = await runCli(['let x=1;']);
   expect(Array.isArray(result.logs[0])).toBe(true);
-  expect(result.logs[0].map(t => t.type)).toEqual([
-    'KEYWORD', 'IDENTIFIER', 'OPERATOR', 'NUMBER', 'PUNCTUATION'
-  ]);
+  expect(result.logs[0].map(t => t.type)).toEqual(SIMPLE_DECL);
   expect(result.exitCode).toBeUndefined();
 });
 
