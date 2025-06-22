@@ -88,7 +88,6 @@ Authoring a plugin? See AGENTS.md → “Plugin” for the contract.
 ║  ╚══ 📄 PLUGIN_API.md
 ╠══ 📄 fileStructure.txt
 ╠══ 📄 jest.config.cjs
-╠══ 📄 package-lock.json
 ╠══ 📄 package.json
 ╠══ 📄 README.md
 ╠══╗ 📂 src
