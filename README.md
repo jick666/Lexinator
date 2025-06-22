@@ -69,6 +69,26 @@ const tsTokens = tokenize('let a: number = 1');
 clearPlugins();
 Authoring a plugin? See AGENTS.md → “Plugin” for the contract.
 
+### Custom token factory
+
+Instrument token creation by supplying `createToken` when constructing a lexer:
+
+```javascript
+import { createTokenStream } from 'lexinator';
+import { Token } from 'lexinator/src/lexer/Token.js';
+
+const seen = [];
+createTokenStream('let x = 1;', {
+  createToken(type, val, start, end, url) {
+    const tok = new Token(type, val, start, end, url);
+    seen.push(tok);
+    return tok;
+  }
+});
+```
+
+#Project layout
+
 #Project layout
 📂 Lexinator
 ╠══ 📄 .eslintrc.cjs
