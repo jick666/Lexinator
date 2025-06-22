@@ -77,7 +77,7 @@ If any step fails **stop** and surface the error; do **not** open a PR.
 |--------|----------|--------------|
 | `src/utils/diagnostics.js` | Token dump, nesting depth, trivia visualiser, REPL. Exposed as `npm run diag` and the `lexdiag` bin. |
 | `.github/workflows/scripts/genTree.js` | Writes an ASCII directory map to STDOUT **and** updates / stages `fileStructure.txt`. |
-
+| `src/utils/checkCoverage.js` | Parses **coverage/clover.xml** and throws if total statement coverage < threshold (default 90 %). Exposed via `npm run check:coverage`; the umbrella `npm run workflow` already runs it. |
 ### How the agent should call them
 
 # read-only inspection
