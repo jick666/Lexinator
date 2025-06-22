@@ -16,8 +16,8 @@ import { LexerEngine } from '../lexer/LexerEngine.js';
 import { analyseTokens, unicodeBad, maxDepth, lineMap } from './tokenAnalysis.js';
 
 /* ── ANSI helper ─────────────────────────────────────────────────── */
-const clr = (c, s) =>
-  `\x1b[${{ red:31, green:32, yellow:33, cyan:36, magenta:35 }[c]}m${s}\x1b[0m`;
+const CLR_CODES = { red: 31, green: 32, yellow: 33, cyan: 36, magenta: 35 };
+const clr = (c, s) => `\x1b[${CLR_CODES[c]}m${s}\x1b[0m`;
 
 /* ── HELP flag ───────────────────────────────────────────────────── */
 if (process.argv.includes('--help')) {
