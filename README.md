@@ -22,7 +22,7 @@
 
 Run `yarn install` to set up dependencies (Yarn v4).
 
-npm i lexinator
+yarn add lexinator
 
 import { tokenize } from 'lexinator';
 
@@ -74,7 +74,6 @@ Authoring a plugin? See AGENTS.md → “Plugin” for the contract.
 ╠══╗ 📂 .husky
 ║  ╠══ 📄 pre-commit
 ║  ╚═══ 📂 ..
-╠══ 📄 .npmrc
 ╠══ 📄 .releaserc
 ╠══╗ 📂 .yarn
 ║  ╚══ 📄 install-state.gz

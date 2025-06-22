@@ -4,7 +4,7 @@
  *
  * • Prints a compact directory tree (skipping dot-files, node_modules, etc.).
  * • Overwrites 'fileStructure.txt' in repo root and stages it with `git add`
- *   when invoked via the npm script ("npm run tree").
+ *   when invoked via the yarn script ("yarn tree").
  */
 import fs   from 'fs';
 import path from 'path';
