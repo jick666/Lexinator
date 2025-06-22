@@ -38,7 +38,7 @@ console.log(tokenize(src));
 
 #CLI
 
-npx lexdiag "html`<h1>${name}</h1>`"
+yarn diag "html`<h1>${name}</h1>`"
 # or
 cat file.js | npx lexdiag --trivia
 (The lexdiag wrapper simply shells into src/utils/diagnostics.js.)
