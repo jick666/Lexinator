@@ -1,4 +1,5 @@
 name: CI
+# Note: npm files are being phased out in favour of Yarn-only workflow.
 
 on:
   push:
