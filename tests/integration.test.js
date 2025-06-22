@@ -1,26 +1,15 @@
 import { tokenize } from "../src/index.js";
+import { ASSIGNMENT_TYPES, expectTypes } from "./utils/tokenTypeUtils.js";
 
 test("integration: var declaration", () => {
   const toks = tokenize("let x = 5;");
-  expect(toks.map(t => t.type)).toEqual([
-    "KEYWORD",
-    "IDENTIFIER",
-    "OPERATOR",
-    "NUMBER",
-    "PUNCTUATION"
-  ]);
+  expectTypes(toks, ASSIGNMENT_TYPES);
 });
 
 test("integration: trailing whitespace does not produce null token", () => {
   const toks = tokenize("let x = 5;   ");
   expect(toks).not.toContain(null);
-  expect(toks.map(t => t.type)).toEqual([
-    "KEYWORD",
-    "IDENTIFIER",
-    "OPERATOR",
-    "NUMBER",
-    "PUNCTUATION"
-  ]);
+  expectTypes(toks, ASSIGNMENT_TYPES);
 });
 
 test("integration: tokenize returns INVALID_REGEX token on unterminated regex", () => {
@@ -49,13 +38,7 @@ test("integration: bigint and optional chaining", () => {
 
 test("integration: hex literals", () => {
   const toks = tokenize("let n = 0x1A;");
-  expect(toks.map(t => t.type)).toEqual([
-    "KEYWORD",
-    "IDENTIFIER",
-    "OPERATOR",
-    "NUMBER",
-    "PUNCTUATION"
-  ]);
+  expectTypes(toks, ASSIGNMENT_TYPES);
   expect(toks[3].value).toBe("0x1A");
 });
 
@@ -73,49 +56,25 @@ test("integration: numeric separator with exponent splits tokens", () => {
 
 test("integration: binary literal", () => {
   const toks = tokenize("let n = 0b1010;");
-  expect(toks.map(t => t.type)).toEqual([
-    "KEYWORD",
-    "IDENTIFIER",
-    "OPERATOR",
-    "NUMBER",
-    "PUNCTUATION"
-  ]);
+  expectTypes(toks, ASSIGNMENT_TYPES);
   expect(toks[3].value).toBe("0b1010");
 });
 
 test("integration: octal literal", () => {
   const toks = tokenize("let n = 0o755;");
-  expect(toks.map(t => t.type)).toEqual([
-    "KEYWORD",
-    "IDENTIFIER",
-    "OPERATOR",
-    "NUMBER",
-    "PUNCTUATION"
-  ]);
+  expectTypes(toks, ASSIGNMENT_TYPES);
   expect(toks[3].value).toBe("0o755");
 });
 
 test("integration: exponent literal", () => {
   const toks = tokenize("let n = 1e3;");
-  expect(toks.map(t => t.type)).toEqual([
-    "KEYWORD",
-    "IDENTIFIER",
-    "OPERATOR",
-    "NUMBER",
-    "PUNCTUATION"
-  ]);
+  expectTypes(toks, ASSIGNMENT_TYPES);
   expect(toks[3].value).toBe("1e3");
 });
 
 test("integration: unicode identifiers", () => {
   const toks = tokenize("let πδ = 1;");
-  expect(toks.map(t => t.type)).toEqual([
-    "KEYWORD",
-    "IDENTIFIER",
-    "OPERATOR",
-    "NUMBER",
-    "PUNCTUATION"
-  ]);
+  expectTypes(toks, ASSIGNMENT_TYPES);
   expect(toks[1].value).toBe("πδ");
 });
 
