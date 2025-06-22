@@ -54,3 +54,25 @@ test("ModuleBlockReader returns null when not matched", () => {
   expect(tok).toBeNull();
   expect(stream.getPosition()).toEqual(pos);
 });
+
+test("ModuleBlockReader handles inner braces depth", () => {
+  const engine = { ...dummyEngine, stateStack: ['module_block'], moduleBlockDepth: 0 };
+  const stream = new CharStream("{ }");
+  let tok = ModuleBlockReader(stream, (t,v,s,e) => new Token(t,v,s,e), engine);
+  expect(tok).toBeNull();
+  expect(engine.moduleBlockDepth).toBe(1);
+  stream.advance(); // skip '{'
+  stream.advance(); // move to '}'
+  tok = ModuleBlockReader(stream, (t,v,s,e) => new Token(t,v,s,e), engine);
+  expect(tok).toBeNull();
+  expect(engine.moduleBlockDepth).toBe(0);
+});
+
+test("ModuleBlockReader requires opening brace", () => {
+  const engine = { ...dummyEngine, stateStack: ['default'] };
+  const stream = new CharStream("module x");
+  const pos = stream.getPosition();
+  const tok = ModuleBlockReader(stream, (t,v,s,e) => new Token(t,v,s,e), engine);
+  expect(tok).toBeNull();
+  expect(stream.getPosition()).toEqual(pos);
+});
