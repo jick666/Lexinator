@@ -1,13 +1,33 @@
-const plugins = [];
+export class PluginManager {
+  constructor() {
+    this.plugins = [];
+  }
+
+  register(plugin) {
+    this.plugins.push(plugin);
+  }
+
+  clear() {
+    this.plugins.length = 0;
+  }
+
+  getAll() {
+    return [...this.plugins];
+  }
+}
+
+export const globalPluginManager = new PluginManager();
 
 export function registerPlugin(plugin) {
-  plugins.push(plugin);
+  globalPluginManager.register(plugin);
 }
 
 export function clearPlugins() {
-  plugins.length = 0;
+  globalPluginManager.clear();
 }
 
 export function getPlugins() {
-  return [...plugins];
+  return globalPluginManager.getAll();
 }
+
+export default globalPluginManager;

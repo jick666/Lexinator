@@ -6,7 +6,12 @@ import { BufferedIncrementalLexer } from "./integration/BufferedIncrementalLexer
 import { createTokenStream, TokenStream } from "./integration/TokenStream.js";
 import { tokenIterator } from "./integration/tokenUtils.js";
 import { fileURLToPath } from "url";
-import { registerPlugin, clearPlugins } from "./pluginManager.js";
+import {
+  registerPlugin,
+  clearPlugins,
+  PluginManager,
+  globalPluginManager
+} from "./pluginManager.js";
 
 /**
  *
@@ -29,7 +34,7 @@ export function tokenize(
 }
 
 export { IncrementalLexer, BufferedIncrementalLexer, TokenStream, createTokenStream };
-export { registerPlugin, clearPlugins };
+export { registerPlugin, clearPlugins, PluginManager, globalPluginManager };
 
 // Only run CLI when invoked directly
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
