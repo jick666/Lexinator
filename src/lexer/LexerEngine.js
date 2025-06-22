@@ -11,6 +11,7 @@ import { Token }                  from './Token.js';
 import { LexerError }             from './LexerError.js';
 import { JavaScriptGrammar }      from '../grammar/JavaScriptGrammar.js';
 import { runReader }              from './TokenReader.js';
+import { getPlugins }             from '../pluginManager.js';
 
 /* ── fast-lookup tables ──────────────────────────────────────────────────── */
 const SINGLE_CHAR_OPS = new Set(
@@ -23,9 +24,6 @@ const PUNCTUATION_SET = JavaScriptGrammar.punctuationSet;
  *  LEXER ENGINE
  * ═════════════════════════════════════════════════════════════════════════ */
 export class LexerEngine {
-  static plugins = [];
-  static registerPlugin(p){ this.plugins.push(p); }
-  static clearPlugins()   { this.plugins.length = 0; }
 
   constructor(
     stream,
@@ -54,7 +52,7 @@ export class LexerEngine {
       jsx:             [JSXReader]
     };
 
-    for(const pl of LexerEngine.plugins){
+    for(const pl of getPlugins()){
       if(pl.modes){
         for(const [m, rd] of Object.entries(pl.modes)) this.addReaders(m, ...rd);
       }
