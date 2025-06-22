@@ -13,6 +13,7 @@ import { performance } from 'perf_hooks';
 import { createInterface } from 'readline';
 import { tokenize } from '../index.js';
 import { LexerEngine } from '../lexer/LexerEngine.js';
+import { analyseTokens, unicodeBad, maxDepth, lineMap } from './tokenAnalysis.js';
 
 /* ── ANSI helper ─────────────────────────────────────────────────── */
 const clr = (c, s) =>
@@ -87,43 +88,6 @@ const fmtTok = t => {
 };
 const bar = (v, max) => '#'.repeat(Math.round(v / max * 20));
 
-function analyse(tokens) {
-  const stats = new Map(), problems = [], stack = [];
-  const pushProb = (tok, msg) =>
-    problems.push({ line: tok.start.line, col: tok.start.column + 1, val: tok.value, msg });
-
-  for (const t of tokens) {
-    stats.set(t.type, (stats.get(t.type) || 0) + 1);
-    if (t.type === 'ERROR_TOKEN' || t.type.startsWith('INVALID')) pushProb(t, 'lexer error token');
-    if (t.type === 'IDENTIFIER' && opLike.test(t.value))          pushProb(t, 'identifier looks like operator');
-
-    if (t.type === 'PUNCTUATION') {
-      if ('{(['.includes(t.value)) stack.push(t.value);
-      if ('}])'.includes(t.value)) {
-        const o = stack.pop();
-        if (!o || '({['.indexOf(o) !== ')}]'.indexOf(t.value)) pushProb(t, 'unbalanced bracket');
-      }
-    }
-  }
-  if (stack.length) pushProb(tokens[tokens.length - 1], 'unclosed bracket');
-  return { stats, problems };
-}
-const unicodeBad = toks =>
-  toks.filter(t => t.type === 'IDENTIFIER' && /[\uD800-\uDFFF]/.test(t.value));
-const maxDepth = toks => {
-  let d = 0, max = 0;
-  for (const t of toks) {
-    if ('([{'.includes(t.value)) d++;
-    if (')]}'.includes(t.value)) d--;
-    max = Math.max(max, d);
-  }
-  return max;
-};
-const lineMap = toks => {
-  const m = new Map();
-  toks.forEach(t => m.set(t.start.line, [...(m.get(t.start.line) || []), fmtTok(t)]));
-  return m;
-};
 const vis = s => s.replace(/\n/g, '⏎').replace(/\t/g, '⇥').replace(/ /g, '·');
 function showTrivia(toks) {
   toks.forEach(t => {
@@ -145,14 +109,14 @@ for (const code of getSnippets()) {
 
   if (process.env.JSON) { console.log(JSON.stringify(tokens, null, 2)); continue; }
 
-  const { stats, problems } = analyse(tokens);
+  const { stats, problems } = analyseTokens(tokens);
 
   console.log(clr('cyan', `\n=== ${code} ===`));
   console.log(tokens.map(fmtTok).join('  '));
 
   console.log(clr('magenta', '\n· per-line map:'));
   for (const [ln, arr] of lineMap(tokens))
-    console.log(`${String(ln).padStart(3)} ▸ ${arr.join('  ')}`);
+    console.log(`${String(ln).padStart(3)} ▸ ${arr.map(fmtTok).join('  ')}`);
 
   const maxCnt = Math.max(...stats.values());
   console.log(clr('magenta', '\n· histogram'));
