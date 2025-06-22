@@ -41,7 +41,7 @@ The agent container sets `HUSKY=0` so Git hooks never block.
 | `yarn diag` | Diagnostics CLI. |
 | `yarn workflow` | Umbrella: lint → test → coverage → bench. |
 
-*NPM scripts are deprecated and will be removed; use the Yarn commands above.*
+*NPM scripts have been removed; use Yarn commands only.*
 
 ## 🤖  Codex playbook
 > *Read by the agent before each task.*
