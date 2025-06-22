@@ -64,6 +64,7 @@ npm test --silent -- --coverage
 node src/utils/diagnostics.js "foo |> bar"
 
 ## 🛫  Pre-flight (run in this exact order)
+Ensure Yarn 4 is installed via `corepack prepare yarn@4.9.2 --activate`.
 
 1. `npm ci`
 2. `npm run tree` &rarr; skim the generated `fileStructure.txt` so you know the lay of the land.  

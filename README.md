@@ -17,6 +17,14 @@
 - **Bench regression guard** – fails CI if the lexer slows by > 10 %.
 
 ---
+## Setup
+This project uses Yarn 4 via [Corepack](https://nodejs.org/api/corepack.html). If Yarn is not available run:
+
+```bash
+corepack prepare yarn@4.9.2 --activate
+yarn install
+```
+
 
 ## Quick start
 
