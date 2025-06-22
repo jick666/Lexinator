@@ -1,4 +1,4 @@
-import { readNumberLiteral, isDigit } from './utils.js';
+import { readNumberLiteral, isDigit } from '../utils.js';
 
 export function DecimalLiteralReader(stream, factory) {
   const startPos = stream.getPosition();

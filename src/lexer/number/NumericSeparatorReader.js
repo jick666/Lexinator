@@ -1,4 +1,4 @@
-import { readDigitsWithUnderscores, isDigit } from './utils.js';
+import { readDigitsWithUnderscores, isDigit } from '../utils.js';
 
 export function NumericSeparatorReader(stream, factory) {
   const startPos = stream.getPosition();
