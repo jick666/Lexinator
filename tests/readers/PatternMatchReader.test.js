@@ -26,3 +26,19 @@ test("PatternMatchReader returns null inside identifier", () => {
   expect(tok).toBeNull();
   expect(stream.getPosition()).toEqual(pos);
 });
+
+test("PatternMatchReader requires word boundary after match", () => {
+  const stream = new CharStream("matcha");
+  const pos = stream.getPosition();
+  const tok = PatternMatchReader(stream, (t,v,s,e) => new Token(t,v,s,e));
+  expect(tok).toBeNull();
+  expect(stream.getPosition()).toEqual(pos);
+});
+
+test("PatternMatchReader requires word boundary after case", () => {
+  const stream = new CharStream("casex");
+  const pos = stream.getPosition();
+  const tok = PatternMatchReader(stream, (t,v,s,e) => new Token(t,v,s,e));
+  expect(tok).toBeNull();
+  expect(stream.getPosition()).toEqual(pos);
+});
