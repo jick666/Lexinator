@@ -18,6 +18,11 @@
 - **≥ 90 % test coverage** – enforced in CI; fuzz cases included.
 - **Bench regression guard** – fails CI if the lexer slows by > 10 %.
 
+## Requirements
+
+- Node.js v18 or newer
+- Yarn v4
+
 ---
 
 ## Quick start
@@ -38,14 +43,14 @@ console.log(tokenize(src));
 ]
 */
 
-#CLI
+## CLI
 
 yarn diag "html`<h1>${name}</h1>`"
 # or
 cat file.js | npx lexdiag --trivia
 (The lexdiag wrapper simply shells into src/utils/diagnostics.js.)
 
-Incremental / buffered lexing
+## Incremental / buffered lexing
 
 import { IncrementalLexer } from 'lexinator';
 
@@ -54,7 +59,7 @@ const inc = new IncrementalLexer({
 });
 inc.feed('const x = 4');
 inc.feed('2;');
-Plugins
+## Plugins
 
 import { registerPlugin, clearPlugins } from 'lexinator';
 import { TypeScriptPlugin } from 'lexinator/plugins/typescript';

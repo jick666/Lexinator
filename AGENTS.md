@@ -1,5 +1,5 @@
 # AGENTS.md – Lexinator Contributor & Codex Guide
-Last updated: 2025-06-21
+Last updated: 2025-06-22
 
 ## 🗺️  Project overview
 Lexinator is a **modular JavaScript lexer / incremental tokeniser** built for
@@ -16,7 +16,7 @@ Key folders:
 ## 🔍  Where to change code
 | Task | Touch these paths | Validation |
 |------|------------------|------------|
-| **Core lexing rule** | `src/lexer/*Reader.js` | The test suite covers 1 858 unit cases + fuzz. |
+| **Core lexing rule** | `src/lexer/*Reader.js` | The test suite covers 1 013 unit cases + fuzz. |
 | **Plugin** | new file under `src/plugins/<name>/` | Add to `plugins/<name>/index.js` and unit test. |
 | **Diagnostics CLI** | `diagnostics.js` | `node diagnostics.js --help`. |
 
