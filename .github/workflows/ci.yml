@@ -68,10 +68,10 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: npm
 
-      - run: npm ci --loglevel=error
+      - run: yarn ci --loglevel=error
         name: Install
 
-      - run: npm test -- --coverage
+      - run: yarn test -- --coverage
         name: Unit tests + coverage
 
       - run: |
@@ -95,9 +95,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_LTS }}
-          cache: npm
+          cache: yarn
 
-      - run: npm ci --loglevel=error
+      - run: yarn ci --loglevel=error
         name: Install
 
       - run: node --expose-gc tests/benchmarks/lexer.bench.js > bench.json
@@ -166,13 +166,11 @@ jobs:
       - run: npm ci --loglevel=error --only=prod
         name: Install prod deps
 
-      - run: npx semantic-release
+      - run: yarn semantic-release
         name: semantic-release
 
       - name: Upload new bench baseline
         if: github.actor != 'github-actions[bot]'
         env:
           PAT_REPO: ${{ secrets.PAT_REPO }}
-        run: |
-          ./ci/prepare-and-push.sh
 
