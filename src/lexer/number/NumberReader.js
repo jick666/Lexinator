@@ -1,5 +1,5 @@
 // §4.2 NumberReader
-import { readNumberLiteral, isDigit } from './utils.js';
+import { readNumberLiteral, isDigit } from '../utils.js';
 
 export function NumberReader(stream, factory) {
   const startPos = stream.getPosition();

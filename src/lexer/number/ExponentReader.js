@@ -1,4 +1,4 @@
-import { readNumberLiteral, readDigits, isDigit } from './utils.js';
+import { readNumberLiteral, readDigits, isDigit } from '../utils.js';
 
 export function ExponentReader(stream, factory) {
   const startPos = stream.getPosition();

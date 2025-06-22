@@ -1,4 +1,4 @@
-import { NumericSeparatorReader } from "../../src/lexer/NumericSeparatorReader.js";
+import { NumericSeparatorReader } from "../../src/lexer/number/NumericSeparatorReader.js";
 import { expectToken, expectNull } from "../utils/readerTestUtils.js";
 
 test("NumericSeparatorReader reads underscores", () => {

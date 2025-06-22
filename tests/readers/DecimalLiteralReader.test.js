@@ -1,4 +1,4 @@
-import { DecimalLiteralReader } from "../../src/lexer/DecimalLiteralReader.js";
+import { DecimalLiteralReader } from "../../src/lexer/number/DecimalLiteralReader.js";
 import { expectToken, expectNull } from "../utils/readerTestUtils.js";
 
 test("DecimalLiteralReader reads suffix form", () => {
