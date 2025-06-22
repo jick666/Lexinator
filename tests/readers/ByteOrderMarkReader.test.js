@@ -1,19 +1,21 @@
 import { CharStream } from "../../src/lexer/CharStream.js";
 import { ByteOrderMarkReader } from "../../src/lexer/ByteOrderMarkReader.js";
-import { runReader } from "../utils/readerTestUtils.js";
+import { expectToken, expectNull } from "../utils/readerTestUtils.js";
 
 test("ByteOrderMarkReader consumes BOM at file start", () => {
-  const { token, stream } = runReader(ByteOrderMarkReader, "\uFEFFlet a = 1;");
-  expect(token.type).toBe("BOM");
-  expect(token.value).toBe("\uFEFF");
-  expect(stream.getPosition().index).toBe(1);
+  const { stream } = expectToken(
+    ByteOrderMarkReader,
+    "\uFEFFlet a = 1;",
+    "BOM",
+    "\uFEFF",
+    1
+  );
+  // ensure other chars remain unread
+  expect(stream.current()).toBe("l");
 });
 
 test("ByteOrderMarkReader returns null when not at start", () => {
   const stream = new CharStream("let a = 1;\uFEFF");
   stream.advance();
-  const pos = stream.getPosition();
-  const { token } = runReader(ByteOrderMarkReader, undefined, undefined, stream);
-  expect(token).toBeNull();
-  expect(stream.getPosition()).toEqual(pos);
+  expectNull(ByteOrderMarkReader, stream);
 });
