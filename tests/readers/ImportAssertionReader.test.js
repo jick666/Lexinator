@@ -1,25 +1,23 @@
 import { CharStream } from "../../src/lexer/CharStream.js";
-import { Token } from "../../src/lexer/Token.js";
 import { ImportAssertionReader } from "../../src/lexer/ImportAssertionReader.js";
+import { runReader } from "../utils/readerTestUtils.js";
 
 test("ImportAssertionReader reads assert clause", () => {
-  const stream = new CharStream("assert { type: 'json' }");
-  const tok = ImportAssertionReader(stream, (t,v,s,e) => new Token(t,v,s,e));
-  expect(tok.type).toBe("IMPORT_ASSERTION");
-  expect(tok.value).toBe("assert { type: 'json' }");
+  const { token } = runReader(ImportAssertionReader, "assert { type: 'json' }");
+  expect(token.type).toBe("IMPORT_ASSERTION");
+  expect(token.value).toBe("assert { type: 'json' }");
 });
 
 test("ImportAssertionReader reads with colon syntax", () => {
-  const stream = new CharStream("assert: { type: 'json' }");
-  const tok = ImportAssertionReader(stream, (t,v,s,e) => new Token(t,v,s,e));
-  expect(tok.type).toBe("IMPORT_ASSERTION");
-  expect(tok.value).toBe("assert: { type: 'json' }");
+  const { token } = runReader(ImportAssertionReader, "assert: { type: 'json' }");
+  expect(token.type).toBe("IMPORT_ASSERTION");
+  expect(token.value).toBe("assert: { type: 'json' }");
 });
 
 test("ImportAssertionReader returns null for non-matching text", () => {
   const stream = new CharStream("assert true");
   const pos = stream.getPosition();
-  const tok = ImportAssertionReader(stream, (t,v,s,e) => new Token(t,v,s,e));
-  expect(tok).toBeNull();
+  const { token } = runReader(ImportAssertionReader, undefined, undefined, stream);
+  expect(token).toBeNull();
   expect(stream.getPosition()).toEqual(pos);
 });
