@@ -17,20 +17,26 @@ export function serializeEngine(engine) {
   };
 }
 
+function reviveToken(data, Token) {
+  const tok = new Token(data.type, data.value, data.start, data.end, data.sourceURL);
+  if (data.leadingTrivia) {
+    tok.leadingTrivia = data.leadingTrivia.map(t => reviveToken(t, Token));
+  }
+  if (data.trailingTrivia) {
+    tok.trailingTrivia = data.trailingTrivia.map(t => reviveToken(t, Token));
+  }
+  return tok;
+}
+
+function reviveTokens(list, Token) {
+  return list.map(t => reviveToken(t, Token));
+}
+
 export function deserializeEngine(engine, data, Token) {
   engine.stateStack = [...data.stateStack];
-  engine.buffer = data.buffer.map(
-    t => new Token(t.type, t.value, t.start, t.end, t.sourceURL)
-  );
+  engine.buffer = reviveTokens(data.buffer, Token);
   engine.disableJsx = data.disableJsx;
-  engine.lastToken = data.lastToken
-    ? new Token(
-        data.lastToken.type,
-        data.lastToken.value,
-        data.lastToken.start,
-        data.lastToken.end,
-        data.lastToken.sourceURL)
-    : null;
+  engine.lastToken = data.lastToken ? reviveToken(data.lastToken, Token) : null;
   engine.errorRecovery            = data.errorRecovery;
   engine.validateUnicodeProperties= data.validateUnicodeProperties ?? false;
   engine.stateInput               = data.stateInput               ?? 'full';
@@ -95,12 +101,8 @@ export function restoreState(instance,
   });
   deserializeEngine(instance.engine, state.engine, Token);
 
-  instance.tokens = state.tokens.map(
-    t => new Token(t.type, t.value, t.start, t.end, t.sourceURL)
-  );
+  instance.tokens = reviveTokens(state.tokens, Token);
   if (includeTrivia) {
-    instance.trivia = state.trivia.map(
-      t => new Token(t.type, t.value, t.start, t.end, t.sourceURL)
-    );
+    instance.trivia = reviveTokens(state.trivia, Token);
   }
 }
