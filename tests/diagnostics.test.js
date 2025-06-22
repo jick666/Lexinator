@@ -121,3 +121,60 @@ test('diagnostics CLI reports malformed unicode identifiers', async () => {
   process.argv = origArgv;
   expect(logs.some(l => l.includes('malformed unicode identifiers'))).toBe(true);
 });
+
+test('diagnostics CLI colourises error and operator-like identifiers', async () => {
+  const diagPath = fileURLToPath(new URL('../src/utils/diagnostics.js', import.meta.url));
+  jest.unstable_mockModule('../src/index.js', () => ({
+    tokenize: () => [
+      {
+        type: 'PUNCTUATION',
+        value: ';',
+        start: { line: 1, column: 0 },
+        end: { line: 1, column: 1 }
+      },
+      {
+        type: 'ERROR_TOKEN',
+        value: '?',
+        start: { line: 1, column: 1 },
+        end: { line: 1, column: 2 }
+      },
+      {
+        type: 'IDENTIFIER',
+        value: '==',
+        start: { line: 1, column: 2 },
+        end: { line: 1, column: 4 }
+      }
+    ]
+  }));
+  jest.resetModules();
+  const logs = [];
+  const originalLog = console.log;
+  console.log = (msg) => logs.push(msg);
+  const origArgv = process.argv.slice();
+  process.argv = [process.execPath, diagPath, 'dummy'];
+  await import('../src/utils/diagnostics.js');
+  console.log = originalLog;
+  process.argv = origArgv;
+  const output = logs.join('\n');
+  expect(output).toContain('PUNCTUATION(;)');
+  expect(output).toContain('\x1b[31mERROR_TOKEN(?)\x1b[0m');
+  expect(output).toContain('\x1b[33mIDENTIFIER(==)\x1b[0m');
+});
+
+test('diagnostics CLI shows trailing trivia', async () => {
+  jest.unstable_mockModule('../src/index.js', () => ({
+    tokenize: () => [
+      {
+        type: 'IDENTIFIER',
+        value: 'x',
+        leadingTrivia: [{ value: ' ' }],
+        trailingTrivia: [{ value: ' ' }],
+        start: { line: 1, column: 0 },
+        end: { line: 1, column: 1 }
+      }
+    ]
+  }));
+  const logs = await runDiagnostics(['--trivia']);
+  expect(logs.some(l => l.includes('lead→IDENTIFIER'))).toBe(true);
+  expect(logs.some(l => l.includes('trail←IDENTIFIER'))).toBe(true);
+});

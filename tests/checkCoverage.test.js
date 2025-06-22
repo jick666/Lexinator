@@ -59,4 +59,16 @@ describe('checkCoverage', () => {
     await expect(import(mod)).rejects.toThrow('Coverage 80% below threshold 85%');
     process.argv = origArgv;
   });
+
+  test('CLI invocation with no script path does not run', async () => {
+    const xml = `<coverage><project><metrics statements="100" coveredstatements="92"/></project></coverage>`;
+    fs.mkdirSync('coverage', { recursive: true });
+    fs.writeFileSync(path.join('coverage', 'clover.xml'), xml);
+    const mod = '../src/utils/checkCoverage.js';
+    jest.resetModules();
+    const origArgv = process.argv.slice();
+    process.argv = [process.execPath];
+    await import(mod);
+    process.argv = origArgv;
+  });
 });
