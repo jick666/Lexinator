@@ -14,5 +14,8 @@ module.exports = {
     "no-unused-vars": "warn",
     "no-console": "warn",
     "semi": ["error", "always"],
+    "indent": ["warn", 2],
+    "no-trailing-spaces": "warn",
+    "eol-last": ["warn", "always"],
   },
 };
