@@ -4,7 +4,7 @@
  *
  * • Prints a compact directory tree (skipping dot-files, node_modules, etc.).
  * • Overwrites 'fileStructure.txt' in repo root and stages it with `git add`
- *   when invoked via the Yarn script ("yarn tree").
+ *   when invoked via the npm script ("npm run tree").
  */
 import fs   from 'fs';
 import path from 'path';
@@ -34,7 +34,7 @@ const root = process.cwd();
 const tree = ['📂 ' + path.basename(root), ...walk(root)].join('\n');
 console.log(tree);
 
-// If invoked via yarn tree, the lifecycle event is set
+// If invoked via npm run tree, the lifecycle event is set
 if (process.env.npm_lifecycle_event === 'tree') {
   fs.writeFileSync('fileStructure.txt', tree + '\n');
   // stage so that Codex / PR diff includes the update
