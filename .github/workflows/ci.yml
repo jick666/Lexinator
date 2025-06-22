@@ -129,7 +129,6 @@ jobs:
         env:
           BENCH_THRESH_PCT: ${{ env.BENCH_THRESH_PCT }}
         run: |
-          # fallback to empty baseline if none exists
           [ -f baseline.json ] || echo '{}' > baseline.json
           node tests/benchmarks/compare.js baseline.json bench.json
 
