@@ -20,6 +20,7 @@
 
 ## Quick start
 
+Run `yarn install` to set up dependencies (Yarn v4).
 
 npm i lexinator
 
