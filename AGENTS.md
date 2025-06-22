@@ -16,7 +16,7 @@ Key folders:
 ## 🔍  Where to change code
 | Task | Touch these paths | Validation |
 |------|------------------|------------|
-| **Core lexing rule** | `src/lexer/*Reader.js` | `npm test` runs 1 858 unit cases + fuzz. |
+| **Core lexing rule** | `src/lexer/*Reader.js` | The test suite covers 1 858 unit cases + fuzz. |
 | **Plugin** | new file under `src/plugins/<name>/` | Add to `plugins/<name>/index.js` and unit test. |
 | **Diagnostics CLI** | `diagnostics.js` | `node diagnostics.js --help`. |
 
@@ -26,25 +26,20 @@ Key folders:
 * Use **named exports** for tree-shaking.
 
 ## 🧪  How to validate changes
-Codex should run **`npm run workflow`** (umbrella) which does:
-
-1. `eslint .`
-2. `npm test --coverage`
-3. `node tests/benchmarks/lexer.bench.js` (bench output ignored unless `BENCH=1`)
-
+Run lint and tests with coverage. Benchmarks are optional unless `BENCH=1`.
 The agent container sets `HUSKY=0` so Git hooks never block.
 
 ## 🔧  Useful scripts
 | Script | Purpose |
 |--------|---------|
-| `npm run lint` | ESLint recommended set (warnings allowed). |
-| `npm test` | Jest with incremental VM loader. |
-| `npm run bench` | Micro-benchmarks (node `--expose-gc` needed). |
-| `npm run build:extension` | VS-Code syntax highlighter bundle. |
-| `npm run check:coverage` | Fail if < 90 % coverage. |
-| `npm run tree` | Generate / update `fileStructure.txt` (directory map). |
-| `npm run diag` | Diagnostics CLI (`src/utils/diagnostics.js`). |
-| `npm run workflow` | Umbrella: lint → test → coverage → bench. |
+| `yarn lint` | ESLint recommended set (warnings allowed). |
+| `yarn test` | Jest with incremental VM loader. |
+| `yarn bench` | Micro-benchmarks (node `--expose-gc` needed). |
+| `yarn build:extension` | VS-Code syntax highlighter bundle. |
+| `node src/utils/checkCoverage.js` | Fail if < threshold coverage. |
+| `yarn tree` | Generate / update `fileStructure.txt` (directory map). |
+| `yarn diag` | Diagnostics CLI. |
+| `yarn workflow` | Umbrella: lint → test → coverage → bench. |
 
 ## 🤖  Codex playbook
 > *Read by the agent before each task.*
@@ -59,29 +54,29 @@ The agent container sets `HUSKY=0` so Git hooks never block.
   * Use unicode edge-case fixtures (`tests/fixtures/`).
 * After code edits run:
 
-npm run lint --silent
-npm test --silent -- --coverage
+yarn lint --silent
+yarn test --silent -- --coverage
 node src/utils/diagnostics.js "foo |> bar"
 
 ## 🛫  Pre-flight (run in this exact order)
 
-1. `npm ci`
-2. `npm run tree` &rarr; skim the generated `fileStructure.txt` so you know the lay of the land.  
-3. `npm run diag "let x = 1"` to confirm the lexer still works.  
-4. `npm run workflow` (fails fast if lint/test/bench regress).  
+1. `yarn install`
+2. `yarn tree` → skim the generated `fileStructure.txt` so you know the lay of the land.
+3. `node src/utils/diagnostics.js "let x = 1"` to confirm the lexer still works.
+4. `yarn workflow` (fails fast if lint/test/bench regress).
 
 If any step fails **stop** and surface the error; do **not** open a PR.
-+## 🧰  Script reference
+## 🧰  Script reference
 
 | script | location | what it does |
 |--------|----------|--------------|
-| `src/utils/diagnostics.js` | Token dump, nesting depth, trivia visualiser, REPL. Exposed as `npm run diag` and the `lexdiag` bin. |
+| `src/utils/diagnostics.js` | Token dump, nesting depth, trivia visualiser, REPL. Exposed via the `lexdiag` bin. |
 | `.github/workflows/scripts/genTree.js` | Writes an ASCII directory map to STDOUT **and** updates / stages `fileStructure.txt`. |
-| `src/utils/checkCoverage.js` | Parses **coverage/clover.xml** and throws if total statement coverage < threshold (default 90 %). Exposed via `npm run check:coverage`; the umbrella `npm run workflow` already runs it. |
+| `src/utils/checkCoverage.js` | Parses **coverage/clover.xml** and throws if total statement coverage < threshold (default 90 %). |
 ### How the agent should call them
 
 # read-only inspection
-npm run tree
+yarn tree
 
 # spot-check a lexer rule you’re editing
-npm run diag "html`<h1>${name}</h1>`"
+yarn diag "html`<h1>${name}</h1>`"

@@ -23,6 +23,7 @@ const thisFile   = fileURLToPath(import.meta.url);
 const invokedVia = process.argv[1] ? path.resolve(process.argv[1]) : '';
 
 if (path.normalize(thisFile) === path.normalize(invokedVia)) {
-  const [, , file, thr] = process.argv;
-  checkCoverage(thr ? Number(thr) : 90, file);
+  const [, , thr] = process.argv;
+  const threshold = thr ? Number(thr) : 90;
+  checkCoverage(threshold);
 }
