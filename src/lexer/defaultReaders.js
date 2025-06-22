@@ -1,14 +1,14 @@
 // src/lexer/defaultReaders.js
 
 import { IdentifierReader } from './IdentifierReader.js';
-import { BinaryReader } from './BinaryReader.js';
-import { OctalReader } from './OctalReader.js';
-import { HexReader } from './HexReader.js';
-import { BigIntReader } from './BigIntReader.js';
-import { DecimalLiteralReader } from './DecimalLiteralReader.js';
-import { NumericSeparatorReader } from './NumericSeparatorReader.js';
-import { ExponentReader } from './ExponentReader.js';
-import { NumberReader } from './NumberReader.js';
+import { BinaryReader } from './number/BinaryReader.js';
+import { OctalReader } from './number/OctalReader.js';
+import { HexReader } from './number/HexReader.js';
+import { BigIntReader } from './number/BigIntReader.js';
+import { DecimalLiteralReader } from './number/DecimalLiteralReader.js';
+import { NumericSeparatorReader } from './number/NumericSeparatorReader.js';
+import { ExponentReader } from './number/ExponentReader.js';
+import { NumberReader } from './number/NumberReader.js';
 import { StringReader } from './StringReader.js';
 import { RegexOrDivideReader } from './RegexOrDivideReader.js';
 import { BindOperatorReader } from './BindOperatorReader.js';
