@@ -1,8 +1,8 @@
 import { BufferedIncrementalLexer } from '../src/integration/BufferedIncrementalLexer.js';
+import { createLexerCollector, getTokenTypes } from './utils/lexerTestUtils.js';
 
 test('buffers incomplete string across feeds', () => {
-  const types = [];
-  const lexer = new BufferedIncrementalLexer({ onToken: t => types.push(t.type) });
+  const { lexer, types } = createLexerCollector(BufferedIncrementalLexer);
   lexer.feed('const s = "hel');
   expect(types).toEqual(['KEYWORD', 'IDENTIFIER', 'OPERATOR']);
   lexer.feed('lo";');
@@ -10,16 +10,15 @@ test('buffers incomplete string across feeds', () => {
 });
 
 test('getTokens includes buffered results only when complete', () => {
-  const lexer = new BufferedIncrementalLexer();
+  const { lexer } = createLexerCollector(BufferedIncrementalLexer);
   lexer.feed('let a = "');
-  expect(lexer.getTokens().map(t => t.type)).toEqual(['KEYWORD', 'IDENTIFIER', 'OPERATOR']);
+  expect(getTokenTypes(lexer)).toEqual(['KEYWORD', 'IDENTIFIER', 'OPERATOR']);
   lexer.feed('b";');
-  expect(lexer.getTokens().map(t => t.type)).toEqual(['KEYWORD', 'IDENTIFIER', 'OPERATOR', 'STRING', 'PUNCTUATION']);
+  expect(getTokenTypes(lexer)).toEqual(['KEYWORD', 'IDENTIFIER', 'OPERATOR', 'STRING', 'PUNCTUATION']);
 });
 
 test('buffers incomplete multi-line comment across feeds', () => {
-  const types = [];
-  const lexer = new BufferedIncrementalLexer({ onToken: t => types.push(t.type) });
+  const { lexer, types } = createLexerCollector(BufferedIncrementalLexer);
   lexer.feed('/* hello');
   expect(types).toEqual([]);
   lexer.feed(' world */ let x = 1;');
@@ -28,8 +27,7 @@ test('buffers incomplete multi-line comment across feeds', () => {
 
 
 test('buffers incomplete regex across feeds', () => {
-  const types = [];
-  const lexer = new BufferedIncrementalLexer({ onToken: t => types.push(t.type) });
+  const { lexer, types } = createLexerCollector(BufferedIncrementalLexer);
   lexer.feed('const r = /ab');
   expect(types).toEqual(['KEYWORD', 'IDENTIFIER', 'OPERATOR', 'INVALID_REGEX']);
   lexer.feed('c/;');
@@ -45,8 +43,7 @@ test('buffers incomplete regex across feeds', () => {
 });
 
 test('buffers incomplete template string with expression across feeds', () => {
-  const types = [];
-  const lexer = new BufferedIncrementalLexer({ onToken: t => types.push(t.type) });
+  const { lexer, types } = createLexerCollector(BufferedIncrementalLexer);
   lexer.feed('const t = `a ${1');
   expect(types).toEqual(['KEYWORD', 'IDENTIFIER', 'OPERATOR']);
   lexer.feed('+2}`;');
@@ -54,15 +51,15 @@ test('buffers incomplete template string with expression across feeds', () => {
 });
 
 test('saveState/restoreState resumes buffered lexing', () => {
-  const lexer = new BufferedIncrementalLexer();
+  const { lexer } = createLexerCollector(BufferedIncrementalLexer);
   lexer.feed('const s = "hel');
   const state = lexer.saveState();
 
-  const resumed = new BufferedIncrementalLexer();
+  const { lexer: resumed } = createLexerCollector(BufferedIncrementalLexer);
   resumed.restoreState(state);
   resumed.feed('lo";');
 
-  const types = resumed.getTokens().map(t => t.type);
+  const types = getTokenTypes(resumed);
   expect(types).toEqual([
     'KEYWORD',
     'IDENTIFIER',
