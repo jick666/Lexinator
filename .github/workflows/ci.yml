@@ -1,8 +1,5 @@
 name: CI
 
-###############################################################################
-# GLOBAL CONFIG
-###############################################################################
 on:
   push:
     branches: [main]
@@ -11,12 +8,12 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read          # checkout + diff
-  pull-requests: write    # PR comment
+  contents: read        # for checkout & diff
+  pull-requests: write  # to post PR comments
 
 env:
-  NODE_LTS: 20.13.1
-  NODE_CUR: 22
+  NODE_LTS: '20.13.1'
+  NODE_CUR: '22'
   COV_THRESHOLD: 90
   BENCH_THRESH_PCT: 10
 
@@ -24,11 +21,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-###############################################################################
-# JOB: lint
-###############################################################################
 jobs:
   lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -36,80 +31,107 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_LTS }}
-          cache: npm
 
-      - run: npm ci --loglevel=error
-        name: Install deps
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.yarn/cache
+            .yarn/build-state.yml
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
-      - run: npm run lint --if-present
+      - run: yarn install --immutable --frozen-lockfile
+        name: Install dependencies
+
+      - run: yarn lint
         name: ESLint
 
-      - run: |
-          npx commitlint --from ${{ github.event.pull_request.base.sha }} \
-                         --to   ${{ github.event.pull_request.head.sha }}
-        if: github.event_name == 'pull_request'
-        name: Commit-lint (PR only)
+      - if: github.event_name == 'pull_request'
+        run: |
+          npx commitlint \
+            --from ${{ github.event.pull_request.base.sha }} \
+            --to   ${{ github.event.pull_request.head.sha }}
+        name: Commitlint
 
-###############################################################################
-# JOB: test  (Node 20 LTS + 22 Current)
-###############################################################################
   test:
+    name: Test
     needs: lint
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
         node: [${{ env.NODE_LTS }}, ${{ env.NODE_CUR }}]
-
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-          cache: npm
 
-      - run: npm ci --loglevel=error
-        name: Install
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.yarn/cache
+            .yarn/build-state.yml
+          key: ${{ runner.os }}-yarn-${{ matrix.node }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-${{ matrix.node }}-
+            ${{ runner.os }}-yarn-
 
-      - run: npm test -- --coverage
+      - run: yarn install --immutable --frozen-lockfile
+        name: Install dependencies
+
+      - run: yarn test -- --coverage
         name: Unit tests + coverage
 
-      - run: |
-          node -e "require('./src/utils/checkCoverage').checkCoverage(${process.env.COV_THRESHOLD})"
-        name: Enforce ≥${{ env.COV_THRESHOLD }} % coverage
+      - name: Enforce ≥${{ env.COV_THRESHOLD }}% coverage
+        run: yarn coverage:check --threshold=${{ env.COV_THRESHOLD }}
 
       - uses: actions/upload-artifact@v4
         with:
           name: coverage-${{ matrix.node }}
           path: coverage
-        name: Upload coverage artefact
 
-###############################################################################
-# JOB: bench
-###############################################################################
   bench:
+    name: Benchmark
     needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_LTS }}
-          cache: npm
 
-      - run: npm ci --loglevel=error
-        name: Install
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.yarn/cache
+            .yarn/build-state.yml
+          key: ${{ runner.os }}-yarn-bench-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - run: yarn install --immutable --frozen-lockfile
+        name: Install dependencies
 
       - run: node --expose-gc tests/benchmarks/lexer.bench.js > bench.json
         name: Run benchmark
+
+      - name: Download previous baseline
+        uses: actions/download-artifact@v4
+        with:
+          name: bench-baseline
+          path: baseline.json
+        continue-on-error: true
 
       - name: Compare to baseline
         env:
           BENCH_THRESH_PCT: ${{ env.BENCH_THRESH_PCT }}
         run: |
-          BASE_URL="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/main/bench.json"
-          curl -sfL "$BASE_URL" -o base.json || echo '{}' > base.json
-          node tests/benchmarks/compare.js
+          # fallback to empty baseline if none exists
+          [ -f baseline.json ] || echo '{}' > baseline.json
+          node tests/benchmarks/compare.js baseline.json bench.json
 
       - uses: actions/upload-artifact@v4
         with:
@@ -117,21 +139,22 @@ jobs:
           path: |
             bench.json
             bench-report.txt
-        name: Upload bench artefacts
 
-###############################################################################
-# JOB: comment  (PR decoration)
-###############################################################################
   comment:
+    name: Post PR Summary
     if: github.event_name == 'pull_request'
     needs: [test, bench]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
-        with: {name: coverage-${{ env.NODE_LTS }}, path: cov}
+        with:
+          name: coverage-${{ env.NODE_LTS }}
+          path: cov
 
       - uses: actions/download-artifact@v4
-        with: {name: bench, path: bench}
+        with:
+          name: bench
+          path: bench
 
       - uses: marocchino/sticky-pull-request-comment@v2
         with:
@@ -139,40 +162,38 @@ jobs:
             cov/coverage-summary.json
             bench/bench-report.txt
           header: "CI summary"
-        name: Post PR summary
 
-###############################################################################
-# JOB: release  (semantic-release → GitHub only)
-###############################################################################
   release:
-    needs: [lint, test, bench]
+    name: Release
     if: github.ref == 'refs/heads/main'
+    needs: [lint, test, bench]
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      packages:  write
-    env:
-      # semantic-release insists on GITHUB_TOKEN, so alias our PAT
-      GITHUB_TOKEN: ${{ secrets.PAT_REPO }}
-      PAT_REPO:     ${{ secrets.PAT_REPO }}
-
+      packages: write
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_LTS }}
-          cache: npm
 
-      - run: npm ci --loglevel=error --only=prod
-        name: Install prod deps
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.yarn/cache
+            .yarn/build-state.yml
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
-      - run: npx semantic-release
-        name: semantic-release
+      - run: yarn install --production --immutable
+        name: Install production dependencies
+
+      - run: yarn semantic-release
+        name: Semantic Release
 
       - name: Upload new bench baseline
         if: github.actor != 'github-actions[bot]'
-        env:
-          PAT_REPO: ${{ secrets.PAT_REPO }}
-        run: |
-          ./ci/prepare-and-push.sh
-
+        uses: actions/upload-artifact@v4
+        with:
+          name: bench-baseline
+          path: bench.json
