@@ -3,32 +3,10 @@ import { fileURLToPath } from 'url';
 import { spawnSync } from 'child_process';
 import fs from 'fs';
 import readline from 'readline';
+import { runCliModule } from './utils/cliTestUtils.js';
 
-async function runDiagnostics(args = [], env = {}, stdinTTY = true, exitFn) {
-  jest.resetModules();
-  const diagPath = fileURLToPath(new URL('../src/utils/diagnostics.js', import.meta.url));
-  const originalArgv = process.argv.slice();
-  const originalEnv = { ...process.env };
-  const origTTY = process.stdin.isTTY;
-  const origExit = process.exit;
-  process.argv = [process.execPath, diagPath, ...args];
-  Object.assign(process.env, env);
-  process.stdin.isTTY = stdinTTY;
-  if (exitFn) process.exit = exitFn;
-
-  const logs = [];
-  const originalLog = console.log;
-  console.log = (msg) => logs.push(msg);
-
-  await import('../src/utils/diagnostics.js');
-
-  console.log = originalLog;
-  process.argv = originalArgv;
-  process.env = originalEnv;
-  process.stdin.isTTY = origTTY;
-  if (exitFn) process.exit = origExit;
-  return logs;
-}
+const runDiagnostics = (args = [], env = {}, stdinTTY = true, exitFn) =>
+  runCliModule('src/utils/diagnostics.js', { args, env, stdinTTY, exitFn }).then(r => r.logs);
 
 test('diagnostics CLI prints token details', async () => {
   const logs = await runDiagnostics(['let x=1;']);
@@ -101,7 +79,6 @@ test('diagnostics CLI logs mode transitions', async () => {
 });
 
 test('diagnostics CLI reports malformed unicode identifiers', async () => {
-  const diagPath = fileURLToPath(new URL('../src/utils/diagnostics.js', import.meta.url));
   jest.unstable_mockModule('../src/index.js', () => ({
     tokenize: () => [{
       type: 'IDENTIFIER',
@@ -110,14 +87,6 @@ test('diagnostics CLI reports malformed unicode identifiers', async () => {
       end: { line: 1, column: 1 }
     }]
   }));
-  jest.resetModules();
-  const logs = [];
-  const originalLog = console.log;
-  console.log = (msg) => logs.push(msg);
-  const origArgv = process.argv.slice();
-  process.argv = [process.execPath, diagPath, 'dummy'];
-  await import('../src/utils/diagnostics.js');
-  console.log = originalLog;
-  process.argv = origArgv;
+  const { logs } = await runCliModule('src/utils/diagnostics.js', { args: ['dummy'] });
   expect(logs.some(l => l.includes('malformed unicode identifiers'))).toBe(true);
 });
