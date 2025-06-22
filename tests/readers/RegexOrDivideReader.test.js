@@ -30,55 +30,20 @@ test("'/=' operator", () => {
 /* ─────────────────────────────────────────────────────────────
  *  Regex literals – happy path
  * ──────────────────────────────────────────────────────────── */
-test("simple regex literal", () => {
-  const tok = RegexOrDivideReader(new CharStream("/abc/g"), mk);
-  expect(tok).toMatchObject({ type: "REGEX", value: "/abc/g" });
-});
-
-test("escaped slash", () => {
-  expect(RegexOrDivideReader(new CharStream("/a\\/b/i"), mk).value)
-    .toBe("/a\\/b/i");
-});
-
-test("character class", () => {
-  expect(RegexOrDivideReader(new CharStream("/[a-z]/g"), mk).value)
-    .toBe("/[a-z]/g");
-});
-
-test("slash inside class", () => {
-  expect(RegexOrDivideReader(new CharStream("/[a\\/b]/"), mk).value)
-    .toBe("/[a\\/b]/");
-});
-
-test("quantifiers and nested groups", () => {
-  const src = "/a{2,3}(b[c]+)*/g";
-  expect(RegexOrDivideReader(new CharStream(src), mk).value).toBe(src);
-});
-
-test("escaped closing bracket", () => {
-  const src = "/[a-z\\]]+/";
-  expect(RegexOrDivideReader(new CharStream(src), mk).value).toBe(src);
-});
-
-test("named capture groups", () => {
-  expect(
-    RegexOrDivideReader(new CharStream("/foo(?<name>bar)/"), mk).value
-  ).toBe("/foo(?<name>bar)/");
-});
-
-test("multiple named capture groups", () => {
-  const src = "/(?<foo>a)(?<bar>b)/";
-  expect(RegexOrDivideReader(new CharStream(src), mk).value).toBe(src);
-});
-
-test("look-behind assertion", () => {
-  const src = "/(?<=foo)bar/";
-  expect(RegexOrDivideReader(new CharStream(src), mk).value).toBe(src);
-});
-
-test("newline in regex literal", () => {
-  const src = "/a\nb/";
-  expect(RegexOrDivideReader(new CharStream(src), mk).value).toBe(src);
+test.each([
+  "/abc/g",
+  "/a\\/b/i",
+  "/[a-z]/g",
+  "/[a\\/b]/",
+  "/a{2,3}(b[c]+)*/g",
+  "/[a-z\\]]+/",
+  "/foo(?<name>bar)/",
+  "/(?<foo>a)(?<bar>b)/",
+  "/(?<=foo)bar/",
+  "/a\\nb/"
+])("regex literal %s", src => {
+  const tok = RegexOrDivideReader(new CharStream(src), mk);
+  expect(tok).toMatchObject({ type: "REGEX", value: src });
 });
 
 /* ─────────────────────────────────────────────────────────────
