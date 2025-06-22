@@ -6,6 +6,7 @@ import { BufferedIncrementalLexer } from "./integration/BufferedIncrementalLexer
 import { createTokenStream, TokenStream } from "./integration/TokenStream.js";
 import { tokenIterator } from "./integration/tokenUtils.js";
 import { fileURLToPath } from "url";
+import { registerPlugin, clearPlugins } from "./pluginManager.js";
 
 /**
  *
@@ -27,9 +28,8 @@ export function tokenize(
   return tokens;
 }
 
-export const registerPlugin = LexerEngine.registerPlugin.bind(LexerEngine);
-export const clearPlugins = LexerEngine.clearPlugins.bind(LexerEngine);
 export { IncrementalLexer, BufferedIncrementalLexer, TokenStream, createTokenStream };
+export { registerPlugin, clearPlugins };
 
 // Only run CLI when invoked directly
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
