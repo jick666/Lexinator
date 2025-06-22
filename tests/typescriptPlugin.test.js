@@ -1,6 +1,6 @@
-import { CharStream } from '../src/lexer/CharStream.js';
-import { LexerEngine } from '../src/lexer/LexerEngine.js';
+import { createEngine } from './utils/testHelpers.js';
 import { registerPlugin, clearPlugins } from '../src/index.js';
+import { CharStream } from '../src/lexer/CharStream.js';
 import { TypeScriptPlugin } from '../src/plugins/typescript/TypeScriptPlugin.js';
 
 afterEach(() => {
@@ -9,14 +9,14 @@ afterEach(() => {
 
 test('TypeScriptPlugin reads decorators', () => {
   registerPlugin(TypeScriptPlugin);
-  const engine = new LexerEngine(new CharStream('@Comp'));
+  const engine = createEngine('@Comp');
   const tok = engine.nextToken();
   expect(tok.type).toBe('DECORATOR');
 });
 
 test('TypeScriptPlugin reads type annotations', () => {
   registerPlugin(TypeScriptPlugin);
-  const engine = new LexerEngine(new CharStream(': number'));
+  const engine = createEngine(': number');
   const tok = engine.nextToken();
   expect(tok.type).toBe('TYPE_ANNOTATION');
   expect(tok.value).toBe(': number');
@@ -24,7 +24,7 @@ test('TypeScriptPlugin reads type annotations', () => {
 
 test('TypeScriptPlugin parses generic parameters without JSX', () => {
   registerPlugin(TypeScriptPlugin);
-  const engine = new LexerEngine(new CharStream('Map<string>'));
+  const engine = createEngine('Map<string>');
   const ident = engine.nextToken();
   expect(ident.type).toBe('IDENTIFIER');
   const generic = engine.nextToken();
@@ -33,7 +33,7 @@ test('TypeScriptPlugin parses generic parameters without JSX', () => {
 
 test('TSGenericParameterReader handles nested generics', () => {
   registerPlugin(TypeScriptPlugin);
-  const engine = new LexerEngine(new CharStream('Map<Map<string>>'));
+  const engine = createEngine('Map<Map<string>>');
   engine.nextToken(); // IDENTIFIER
   const tok = engine.nextToken();
   expect(tok.value).toBe('<Map<string>>');

@@ -1,5 +1,4 @@
-import { CharStream } from '../src/lexer/CharStream.js';
-import { LexerEngine } from '../src/lexer/LexerEngine.js';
+import { createEngine } from './utils/testHelpers.js';
 import { registerPlugin, clearPlugins } from '../src/index.js';
 
 function HashReader(stream, factory) {
@@ -26,7 +25,7 @@ afterEach(() => {
 
 test('registerPlugin adds reader', () => {
   registerPlugin(plugin);
-  const engine = new LexerEngine(new CharStream('#'));
+  const engine = createEngine('#');
   const tok = engine.nextToken();
   expect(tok.type).toBe('HASH');
   expect(initCalled).toBe(true);
@@ -35,7 +34,7 @@ test('registerPlugin adds reader', () => {
 test('clearPlugins removes registered plugins', () => {
   registerPlugin(plugin);
   clearPlugins();
-  const engine = new LexerEngine(new CharStream('#'));
+  const engine = createEngine('#');
   const tok = engine.nextToken();
   expect(tok).toBeNull();
   expect(initCalled).toBe(false);
