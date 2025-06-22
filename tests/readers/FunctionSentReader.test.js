@@ -16,3 +16,7 @@ test("FunctionSentReader returns null inside identifier", () => {
   stream.advance();
   expectNull(FunctionSentReader, stream);
 });
+
+test("FunctionSentReader requires word boundary", () => {
+  expectNull(FunctionSentReader, "function.sentx");
+});

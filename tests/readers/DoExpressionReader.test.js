@@ -52,3 +52,25 @@ test("DoExpressionReader tracks nested blocks", () => {
   expect(endOuter.type).toBe("DO_BLOCK_END");
   expect(engine.currentMode()).toBe("default");
 });
+
+test("DoExpressionReader returns null without brace", () => {
+  const engine = { ...dummyEngine, stateStack: ['default'] };
+  const stream = new CharStream("do value");
+  const pos = stream.getPosition();
+  const tok = DoExpressionReader(stream, (t,v,s,e) => new Token(t,v,s,e), engine);
+  expect(tok).toBeNull();
+  expect(stream.getPosition()).toEqual(pos);
+});
+
+test("DoExpressionReader handles inner braces depth", () => {
+  const engine = { ...dummyEngine, stateStack: ['do_block'], doBlockDepth: 0 };
+  const stream = new CharStream("{ }");
+  let tok = DoExpressionReader(stream, (t,v,s,e) => new Token(t,v,s,e), engine);
+  expect(tok).toBeNull();
+  expect(engine.doBlockDepth).toBe(1);
+  stream.advance(); // skip '{'
+  stream.advance(); // move to '}'
+  tok = DoExpressionReader(stream, (t,v,s,e) => new Token(t,v,s,e), engine);
+  expect(tok).toBeNull();
+  expect(engine.doBlockDepth).toBe(0);
+});
