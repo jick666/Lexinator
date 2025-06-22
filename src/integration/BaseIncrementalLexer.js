@@ -9,11 +9,11 @@ import { saveState, restoreState } from './stateUtils.js';
  * implement the `feed()` method to consume input and emit tokens.
  */
 export class BaseIncrementalLexer {
-  constructor({ onToken, errorRecovery = false, sourceURL = null } = {}) {
+  constructor({ onToken, errorRecovery = false, sourceURL = null, createToken } = {}) {
     this.onToken = onToken || (() => {});
     this.tokens = [];
     this.stream = new CharStream('', { sourceURL });
-    this.engine = new LexerEngine(this.stream, { errorRecovery });
+    this.engine = new LexerEngine(this.stream, { errorRecovery, createToken });
     // dependencies for state helpers
     this._deps = { CharStream, LexerEngine, Token };
   }
