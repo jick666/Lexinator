@@ -14,6 +14,7 @@ describe('checkCoverage', () => {
 
   afterEach(() => {
     fs.rmSync(tmp, { recursive: true, force: true });
+    fs.rmSync('coverage', { recursive: true, force: true });
   });
 
   test('passes when coverage meets threshold', () => {
@@ -37,22 +38,24 @@ describe('checkCoverage', () => {
 
   test('CLI invocation uses default threshold', async () => {
     const xml = `<coverage><project><metrics statements="100" coveredstatements="94"/></project></coverage>`;
-    fs.writeFileSync(file, xml);
+    fs.mkdirSync('coverage', { recursive: true });
+    fs.writeFileSync(path.join('coverage', 'clover.xml'), xml);
     const mod = '../src/utils/checkCoverage.js';
     jest.resetModules();
     const origArgv = process.argv.slice();
-    process.argv = [process.execPath, fileURLToPath(new URL(mod, import.meta.url)), file];
+    process.argv = [process.execPath, fileURLToPath(new URL(mod, import.meta.url))];
     await import(mod);
     process.argv = origArgv;
   });
 
   test('CLI invocation throws on low coverage', async () => {
     const xml = `<coverage><project><metrics statements="100" coveredstatements="80"/></project></coverage>`;
-    fs.writeFileSync(file, xml);
+    fs.mkdirSync('coverage', { recursive: true });
+    fs.writeFileSync(path.join('coverage', 'clover.xml'), xml);
     const mod = '../src/utils/checkCoverage.js';
     jest.resetModules();
     const origArgv = process.argv.slice();
-    process.argv = [process.execPath, fileURLToPath(new URL(mod, import.meta.url)), file, '85'];
+    process.argv = [process.execPath, fileURLToPath(new URL(mod, import.meta.url)), '85'];
     await expect(import(mod)).rejects.toThrow('Coverage 80% below threshold 85%');
     process.argv = origArgv;
   });
