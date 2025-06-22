@@ -82,3 +82,7 @@ yarn tree
 
 # spot-check a lexer rule you’re editing
 yarn diag "html`<h1>${name}</h1>`"
+
+## ⚝ Next Steps 
+
+I would like for you to see what we have for benchmark test right now and if they're not adequate, I want you to make new benchmark tests and run them to test the speed and the lexical ability of each reader ,
