@@ -13,9 +13,9 @@ export function createTypeAnnotationReader({ allowQuestionMark = false } = {}) {
       stream.advance();
     }
     while (stream.current() && pattern.test(stream.current())) {
+      if (/\n/.test(stream.current())) break;
       value += stream.current();
       stream.advance();
-      if (/\n/.test(stream.current())) break;
     }
     return factory('TYPE_ANNOTATION', value.trimEnd(), start, stream.getPosition());
   };
