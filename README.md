@@ -4,7 +4,7 @@
 [![coverage ≥ 90%](https://img.shields.io/badge/coverage-90%2B-brightgreen)](./coverage)
 [![npm v](https://img.shields.io/npm/v/lexinator?logo=npm)](https://www.npmjs.com/package/lexinator)
 
-> **Note**: The repository is switching to Yarn as the sole package manager. Remaining npm files will be removed soon.
+> **Note**: The repository uses Yarn as the sole package manager.
 
 *Modular, incremental&hairsp;/&hairsp;buffered JavaScript lexer with experiment-grade plug-ability.*
 
@@ -76,7 +76,6 @@ Authoring a plugin? See AGENTS.md → “Plugin” for the contract.
 ╠══╗ 📂 .husky
 ║  ╠══ 📄 pre-commit
 ║  ╚═══ 📂 ..
-╠══ 📄 .npmrc  *(to be removed)*
 ╠══ 📄 .releaserc
 ╠══╗ 📂 .yarn
 ║  ╚══ 📄 install-state.gz
@@ -91,7 +90,6 @@ Authoring a plugin? See AGENTS.md → “Plugin” for the contract.
 ║  ╚══ 📄 PLUGIN_API.md
 ╠══ 📄 fileStructure.txt
 ╠══ 📄 jest.config.cjs
-╠══ 📄 package-lock.json  *(to be removed)*
 ╠══ 📄 package.json
 ╠══ 📄 README.md
 ╠══╗ 📂 src
