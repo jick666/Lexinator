@@ -15,7 +15,7 @@
 - **Incremental & streaming modes** – tokenise as you type or as a Node stream.
 - **Plugin API** – Flow, TypeScript, Stage-3 proposals, decorators… drop-in readers.
 - **Diagnostics CLI** – colourised token dump, nesting depth, trivia visualiser, REPL.
-- **≥ 90 % test coverage** – enforced in CI; fuzz cases included.
+- **≥ 90 % test coverage** – enforced in CI; current coverage is 100 %.
 - **Bench regression guard** – fails CI if the lexer slows by > 10 %.
 
 ## Requirements
@@ -47,8 +47,8 @@ console.log(tokenize(src));
 
 yarn diag "html`<h1>${name}</h1>`"
 # or
-cat file.js | npx lexdiag --trivia
-(The lexdiag wrapper simply shells into src/utils/diagnostics.js.)
+cat file.js | node src/utils/diagnostics.js --trivia
+(Run the diagnostics script directly or via `yarn diag`.)
 
 ## Incremental / buffered lexing
 

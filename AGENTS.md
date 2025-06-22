@@ -41,7 +41,7 @@ The agent container sets `HUSKY=0` so Git hooks never block.
 | `yarn diag` | Diagnostics CLI. |
 | `yarn workflow` | Umbrella: lint → test → coverage → bench. |
 
-*NPM scripts have been removed; use Yarn commands only.*
+Use **Yarn v4** for all project scripts; npm is not used for development.
 
 ## 🤖  Codex playbook
 > *Read by the agent before each task.*
@@ -72,7 +72,7 @@ If any step fails **stop** and surface the error; do **not** open a PR.
 
 | script | location | what it does |
 |--------|----------|--------------|
-| `src/utils/diagnostics.js` | Token dump, nesting depth, trivia visualiser, REPL. Exposed via the `lexdiag` bin. |
+| `src/utils/diagnostics.js` | Token dump, nesting depth, trivia visualiser, REPL. Run via `yarn diag`. |
 | `.github/workflows/scripts/genTree.js` | Writes an ASCII directory map to STDOUT **and** updates / stages `fileStructure.txt`. |
 | `src/utils/checkCoverage.js` | Parses **coverage/clover.xml** and throws if total statement coverage < threshold (default 90 %). |
 ### How the agent should call them
