@@ -1,3 +1,5 @@
+// @ts-nocheck
+import { test, expect } from '@jest/globals';
 import { saveState, restoreState } from '../src/integration/stateUtils.js';
 import { CharStream } from '../src/lexer/CharStream.js';
 import { LexerEngine } from '../src/lexer/LexerEngine.js';

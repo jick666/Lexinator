@@ -1,3 +1,5 @@
+// @ts-nocheck
+import { test, expect } from '@jest/globals';
 import { ImportMetaReader } from "../../src/lexer/ImportMetaReader.js";
 import { expectToken, expectNull } from "../utils/readerTestUtils.js";
 

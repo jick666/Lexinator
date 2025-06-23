@@ -1,4 +1,5 @@
-import { jest } from "@jest/globals";
+// @ts-nocheck
+import { jest, test, expect } from "@jest/globals";
 import { CharStream } from '../src/lexer/CharStream.js';
 import { runReader } from '../src/lexer/TokenReader.js';
 

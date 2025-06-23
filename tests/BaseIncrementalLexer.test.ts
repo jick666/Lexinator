@@ -1,3 +1,5 @@
+// @ts-nocheck
+import { test, expect } from '@jest/globals';
 import { BaseIncrementalLexer } from '../src/integration/BaseIncrementalLexer.js';
 
 test('emit stores token and calls callback', () => {
