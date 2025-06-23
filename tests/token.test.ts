@@ -1,3 +1,5 @@
+// @ts-nocheck
+import { test, expect } from '@jest/globals';
 import { Token } from '../src/lexer/Token.js';
 
 test('Token.toJSON produces plain object', () => {

@@ -1,3 +1,5 @@
+// @ts-nocheck
+import { test, expect } from '@jest/globals';
 import { IncrementalLexer } from '../src/integration/IncrementalLexer.js';
 import { ASSIGNMENT_TYPES, getTypes } from './utils/tokenTypeUtils.js';
 

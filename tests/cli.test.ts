@@ -1,4 +1,5 @@
-import { jest } from '@jest/globals';
+// @ts-nocheck
+import { jest, test, expect } from '@jest/globals';
 import { fileURLToPath } from 'url';
 import { tokenize } from '../src/index.js';
 import { ASSIGNMENT_TYPES, getTypes } from './utils/tokenTypeUtils.js';
