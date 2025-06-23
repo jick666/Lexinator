@@ -84,5 +84,6 @@ yarn tree
 yarn diag "html`<h1>${name}</h1>`"
 
 ## ⚝ Next Steps 
-
-I would like for you to see what we have for benchmark test right now and if they're not adequate, I want you to make new benchmark tests and run them to test the speed and the lexical ability of each reader ,
+* We are transitioning this codebase from JS over to TS until it is complete.
+* Convert as many JS modules as possible.
+* Provide a percentage of Modules successfully converted to TS for this entire project at the end of your run.
