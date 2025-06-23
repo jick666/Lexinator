@@ -17,6 +17,7 @@
 - **Diagnostics CLI** – colourised token dump, nesting depth, trivia visualiser, REPL.
 - **≥ 90 % test coverage** – enforced in CI; current coverage is 100 %.
 - **Bench regression guard** – fails CI if the lexer slows by > 10 %.
+- **Written in TypeScript** – all source modules are implemented in TypeScript.
 
 ## Requirements
 
