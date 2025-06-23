@@ -1,3 +1,5 @@
+// @ts-nocheck
+import { test, expect } from '@jest/globals';
 import { LexerError } from '../src/lexer/LexerError.js';
 
 test('LexerError formatting helpers', () => {
