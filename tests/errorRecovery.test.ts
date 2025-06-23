@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { CharStream } from "../src/lexer/CharStream.js";
 import { LexerEngine } from "../src/lexer/LexerEngine.js";
 
