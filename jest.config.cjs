@@ -1,15 +1,17 @@
 // jest.config.cjs
+const tsPreset = require('ts-jest/presets/default-esm/jest-preset');
+
 module.exports = {
+  ...tsPreset,
   testEnvironment: 'node',
-  // No transforms needed for native ESM
-  transform: {},
-  // Collect coverage only from public modules
+  moduleNameMapper: {
+    '^(\\.{1,2}/.*)\\.js$': '$1'
+  },
   collectCoverageFrom: [
     'src/index.js',
     'src/pluginManager.js',
     'src/utils/**/*.js',
     'src/plugins/**/*.js'
   ],
-  // (Optional) put reports in the same coverage folder
-  coverageDirectory: 'coverage',
+  coverageDirectory: 'coverage'
 };
