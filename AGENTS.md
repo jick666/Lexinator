@@ -84,6 +84,6 @@ yarn tree
 yarn diag "html`<h1>${name}</h1>`"
 
 ## ⚝ Next Steps 
-* We are transitioning this codebase from JS over to TS until it is complete.
+* We are transitioning the test modules from JS over to TS until it is complete.
 * Convert as many JS modules as possible.
 * Provide a percentage of Modules successfully converted to TS for this entire project at the end of your run.
