@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { CharStream } from "../../src/lexer/CharStream.js";
 import { Token } from "../../src/lexer/Token.js";
 

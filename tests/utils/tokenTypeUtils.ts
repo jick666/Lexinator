@@ -1,3 +1,4 @@
+// @ts-nocheck
 export const ASSIGNMENT_TYPES = [
   'KEYWORD',
   'IDENTIFIER',

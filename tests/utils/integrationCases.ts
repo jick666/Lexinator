@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { ASSIGNMENT_TYPES } from './tokenTypeUtils.js';
 
 export const integrationCases = [
