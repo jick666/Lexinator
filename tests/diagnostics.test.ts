@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { jest } from '@jest/globals';
 import { fileURLToPath } from 'url';
 import { spawnSync } from 'child_process';

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { jest } from "@jest/globals";
 import { CharStream } from "../src/lexer/CharStream.js";
 import { LexerEngine } from "../src/lexer/LexerEngine.js";
