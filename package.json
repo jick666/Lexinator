@@ -17,7 +17,7 @@
     "diag": "node ./src/utils/diagnostics.js",
     "diagnostics": "yarn diag",
     "check:coverage": "node src/utils/checkCoverage.js 90",
-    "workflow": "yarn lint && yarn test --coverage && yarn check:coverage && node tests/benchmarks/lexer.bench.js",
+    "workflow": "yarn lint && yarn test --coverage && yarn check:coverage && node tests/benchmarks/lexer.bench.js && node tests/benchmarks/realworld.bench.js",
     "clean": "rimraf dist coverage .turbo && echo cleaned",
     "upgrade": "yarn up \"*\" --latest"
   },
