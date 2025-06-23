@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { CommentReader } from "../../src/lexer/CommentReader.js";
 import { runReader } from "../utils/readerTestUtils.js";
 

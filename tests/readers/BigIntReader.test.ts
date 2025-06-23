@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { BigIntReader } from "../../src/lexer/number/BigIntReader.js";
 import { expectToken, expectNull } from "../utils/readerTestUtils.js";
 

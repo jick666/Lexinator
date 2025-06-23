@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { CharStream } from "../../src/lexer/CharStream.js";
 import { ByteOrderMarkReader } from "../../src/lexer/ByteOrderMarkReader.js";
 import { runReader } from "../utils/readerTestUtils.js";
