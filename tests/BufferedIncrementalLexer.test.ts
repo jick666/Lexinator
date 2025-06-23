@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { BufferedIncrementalLexer } from '../src/integration/BufferedIncrementalLexer.js';
 import { PREFIX_TYPES, STRING_ASSIGN_TYPES, COMMENT_ASSIGN_TYPES, getTypes } from './utils/tokenTypeUtils.js';
 
