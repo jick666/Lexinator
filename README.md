@@ -88,6 +88,16 @@ createTokenStream('let x = 1;', {
 });
 ```
 
+# Development scripts
+
+Run the repo's automation via Yarn:
+
+```bash
+yarn lint     # ESLint checks
+yarn test     # Jest with coverage
+yarn workflow # lint → test → coverage → bench
+```
+
 #Project layout
 
 #Project layout
