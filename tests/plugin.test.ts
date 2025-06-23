@@ -1,3 +1,5 @@
+// @ts-nocheck
+import { afterEach, test, expect } from '@jest/globals';
 import { CharStream } from '../src/lexer/CharStream.js';
 import { LexerEngine } from '../src/lexer/LexerEngine.js';
 import { registerPlugin, clearPlugins } from '../src/index.js';
