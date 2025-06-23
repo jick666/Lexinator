@@ -1,3 +1,5 @@
+// @ts-nocheck
+import { test, expect } from '@jest/globals';
 import { createTypeAnnotationReader } from '../../src/plugins/common/TypeAnnotationReader.js';
 import { expectToken, expectNull } from '../utils/readerTestUtils.js';
 

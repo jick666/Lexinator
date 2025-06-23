@@ -1,3 +1,5 @@
+// @ts-nocheck
+import { test, expect } from '@jest/globals';
 import { CharStream } from "../../src/lexer/CharStream.js";
 import { OperatorReader } from "../../src/lexer/OperatorReader.js";
 import { runReader } from "../utils/readerTestUtils.js";
