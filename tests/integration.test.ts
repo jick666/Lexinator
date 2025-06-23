@@ -1,3 +1,5 @@
+// @ts-nocheck
+import { describe, test, expect } from '@jest/globals';
 import { tokenize } from "../src/index.js";
 import { expectTypes } from "./utils/tokenTypeUtils.js";
 import { integrationCases } from "./utils/integrationCases.js";
