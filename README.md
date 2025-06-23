@@ -90,12 +90,14 @@ createTokenStream('let x = 1;', {
 
 # Development scripts
 
-Run the repo's automation via Yarn:
+Run the following Yarn commands to keep the project in shape:
 
 ```bash
-yarn lint     # ESLint checks
-yarn test     # Jest with coverage
-yarn workflow # lint → test → coverage → bench
+- `yarn lint` – run ESLint over the entire codebase.
+- `yarn test` – execute the Jest suite with coverage enabled.
+- `yarn workflow` – lint, test, check coverage and benchmark.
+- `yarn diag` – inspect tokenisation via the diagnostics CLI.
+- `yarn tree` – update `fileStructure.txt` to reflect the repository layout.
 ```
 
 #Project layout
