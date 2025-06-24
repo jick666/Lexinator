@@ -19,7 +19,8 @@
     "check:coverage": "node src/utils/checkCoverage.js 90",
     "workflow": "yarn lint && yarn test --coverage && yarn check:coverage && node tests/benchmarks/lexer.bench.js && node tests/benchmarks/realworld.bench.js",
     "clean": "rimraf dist coverage .turbo && echo cleaned",
-    "upgrade": "yarn up \"*\" --latest"
+    "upgrade": "yarn up \"*\" --latest",
+    "format": "prettier --write ."
   },
   "keywords": [
     "lexer",
@@ -47,6 +48,7 @@
     "husky": "^9.1.7",
     "jest": "^29.7.0",
     "nock": "^14.0.2",
+    "prettier": "^3.2.5",
     "rimraf": "^5.0.5",
     "ts-jest": "^29.4.0",
     "typescript": "^5.8.3"
