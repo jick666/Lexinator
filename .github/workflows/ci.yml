@@ -81,11 +81,11 @@ jobs:
       - run: yarn install --immutable --frozen-lockfile
         name: Install dependencies
 
-      - run: yarn test -- --coverage
+      - run: yarn test
         name: Unit tests + coverage
 
       - name: Enforce ≥${{ env.COV_THRESHOLD }}% coverage
-        run: yarn coverage:check --threshold=${{ env.COV_THRESHOLD }}
+        run: yarn check:coverage --threshold=${{ env.COV_THRESHOLD }}
 
       - uses: actions/upload-artifact@v4
         with:
