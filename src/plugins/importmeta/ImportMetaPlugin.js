@@ -2,12 +2,9 @@
 
 import { ImportMetaReader } from '../../lexer/ImportMetaReader.js';
 import { ImportCallReader } from '../../lexer/ImportCallReader.js';
+import { createPlugin } from '../pluginUtils.js';
 
-export const ImportMetaPlugin = {
-  // Declarative reader list (fallback)
-  modes: { default: [ImportMetaReader, ImportCallReader] },
-
-  init(engine) {
-    engine.addReaders('default', ImportMetaReader, ImportCallReader);
-  }
-};
+export const ImportMetaPlugin = createPlugin([
+  ImportMetaReader,
+  ImportCallReader
+]);

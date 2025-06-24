@@ -2,6 +2,7 @@
 
 import { TSDecoratorReader } from '../common/TSDecoratorReader.js';
 import { createTypeAnnotationReader } from '../common/TypeAnnotationReader.js';
+import { createPlugin } from '../pluginUtils.js';
 
 export const TSTypeAnnotationReader = createTypeAnnotationReader();
 
@@ -27,18 +28,9 @@ export function TSGenericParameterReader(stream, factory) {
   return factory('TYPE_PARAMETER', value, start, stream.getPosition());
 }
 
-export const TypeScriptPlugin = {
-  modes: {
-    default: [TSDecoratorReader, TSTypeAnnotationReader, TSGenericParameterReader]
-  },
-
-  init(engine) {
+export const TypeScriptPlugin = createPlugin(
+  [TSDecoratorReader, TSTypeAnnotationReader, TSGenericParameterReader],
+  engine => {
     engine.disableJsx = true;
-    engine.addReaders(
-      'default',
-      TSDecoratorReader,
-      TSTypeAnnotationReader,
-      TSGenericParameterReader
-    );
   }
-};
+);
