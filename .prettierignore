@@ -1,0 +1,13 @@
+# Dependencies
+node_modules
+
+# Build output
+coverage
+dist
+
+# Yarn install state
+yarn.lock
+
+# Git directories
+.git
+.github/workflows/ci.yml
