@@ -1,96 +1,75 @@
-# AGENTS.md – Lexinator Contributor & Codex Guide
-Last updated: 2025-06-22
+# AGENTS.md  – Operational contract for autonomous coding agents
 
-## 🗺️  Project overview
-Lexinator is a **modular JavaScript lexer / incremental tokeniser** built for
-experimentation (JS stage-3 proposals, Flow, TypeScript etc.).  
-Key folders:
+> Scope: entire repository (no nested overrides yet).
 
-| Folder | What lives here | Notes |
-|--------|-----------------|-------|
-| `src/lexer/` | Stateless, pure readers + engine | Each reader obeys `reader(stream, factory, engine?)` contract. |
-| `src/integration/` | Stateful utilities (incremental, streams) | Safe for browser bundling. |
-| `src/plugins/` | Optional language extensions | Enabled via `registerPlugin()`. |
-| `tests/` | Jest & fuzzing suites | Must reach ≥ 90 % coverage (checked in CI). |
+---
 
-## 🔍  Where to change code
-| Task | Touch these paths | Validation |
-|------|------------------|------------|
-| **Core lexing rule** | `src/lexer/*Reader.js` | The test suite covers 1 013 unit cases + fuzz. |
-| **Plugin** | new file under `src/plugins/<name>/` | Add to `plugins/<name>/index.js` and unit test. |
-| **Diagnostics CLI** | `diagnostics.js` | `node diagnostics.js --help`. |
+## 1. Role & Objective
+You are **Lexinator-Agent**, an autonomous contributor whose sole goal is to **improve and extend Lexinator while keeping the lexer < 5 % slower and coverage ≥ 90 %**.
 
-### JS-doc conventions
-* Public API exported from `src/index.js` **must stay ESM**.  
-* Reader functions **MUST be pure** (no I/O or globals).  
-* Use **named exports** for tree-shaking.
+## 2. Repository invariants
+| Invariant | How to check / enforce |
+|-----------|------------------------|
+| Tests must pass | `yarn test --coverage` |
+| Coverage ≥ 90 % | Jest gate; see `src/utils/checkCoverage.js` |
+| Benchmark delta < 10 % | `yarn workflow` runs bench guard |
+| Only Yarn 4 | Use the lock-file; never run `npm install` |
 
-## 🧪  How to validate changes
-Run lint and tests with coverage. Benchmarks are optional unless `BENCH=1`.
-The agent container sets `HUSKY=0` so Git hooks never block.
+## 3. Directory conventions
+* **`src/lexer/**` – one file per token reader, *no shared state*.  
+* **`src/plugins/*Plugin.js`** – must export `name` & `register()` returning reader map.  
+* **`tests/**` – mirror source path; each reader gets `*.test.js`.  
 
-## 🔧  Useful scripts
-| Script | Purpose |
-|--------|---------|
-| `yarn lint` | ESLint recommended set (warnings allowed). |
-| `yarn test` | Jest with incremental VM loader. |
-| `yarn bench` | Micro-benchmarks (node `--expose-gc` needed). |
-| `yarn build:extension` | VS-Code syntax highlighter bundle. |
-| `node src/utils/checkCoverage.js` | Fail if < threshold coverage. |
-| `yarn tree` | Generate / update `fileStructure.txt` (directory map). |
-| `yarn diag` | Diagnostics CLI. |
-| `yarn format` | Apply Prettier formatting. |
-| `yarn format:check` | Verify Prettier formatting. |
-| `yarn workflow` | Umbrella: lint → test → coverage → bench. |
+## 4. How to implement a feature
+1. Create feature branch `<type>/<short-desc>`.  
+2. Add/modify **spec** in `docs/LEXER_SPEC.md` if grammar changes.  
+3. Write failing test in `tests/...`.  
+4. Implement reader / plugin.  
+5. Run `yarn workflow`.  
+6. Open PR; include CHANGELOG bullet.
 
-Use **Yarn v4** for all project scripts; npm is not used for development.
+## 5. Coding style
+* TypeScript **strict**; `tsconfig.json` governs.  
+* Prefer immutable data; avoid `class` where a pure function suffices.  
+* Top-level exports only – no default exports.
 
-## 🤖  Codex playbook
-> *Read by the agent before each task.*
+## 6. Forbidden areas
+* Don’t touch `docs/INCREMENTAL_STATE.md` without maintainer approval.  
+* Don’t commit build artefacts or `.bench` output.
 
-* **Start** in `src/` root unless prompt specifies path.  
-* Obey `.eslintrc.cjs`; auto-fix is allowed.  
-* Prefer **small PRs** (< 400 LoC diff). If a task seems large:
-  1. Reply with a task breakdown.
-  2. Await user confirmation.
-* When writing tests:
-  * Mirror reader file name e.g. `HexReader.js` → `HexReader.test.js`.
-  * Use unicode edge-case fixtures (`tests/fixtures/`).
-* After code edits run:
+## 7. Test execution hints (CI sandbox)
+* File-system access is allowed but network is **denied**.  
+* Use Node 18 APIs only; no experimental flags.
 
-yarn lint --silent
-yarn test --silent -- --coverage
-node src/utils/diagnostics.js "foo |> bar"
+---
 
-## 🛫  Pre-flight (run in this exact order)
+### Minimal agent loop
 
-1. `yarn install`
-2. `yarn tree` → skim the generated `fileStructure.txt` so you know the lay of the land.
-3. `node src/utils/diagnostics.js "let x = 1"` to confirm the lexer still works.
-4. `yarn format:check`
-5. `yarn workflow` (fails fast if lint/test/bench regress).
+while backlog.exists():
+    pick highest-priority issue
+    create branch
+    implement feature + tests
+    open PR, assign @jick666
+8. Self-termination clause
+If a task cannot be completed in ≤ 30 min CPU or would drop coverage below threshold, emit EXIT_INCOMPLETE and stop.
 
-If any step fails **stop** and surface the error; do **not** open a PR.
-## 🧰  Script reference
+> **Why this layout?**
 
-| script | location | what it does |
-|--------|----------|--------------|
-| `src/utils/diagnostics.js` | Token dump, nesting depth, trivia visualiser, REPL. Run via `yarn diag`. |
-| `.github/workflows/scripts/genTree.js` | Writes an ASCII directory map to STDOUT **and** updates / stages `fileStructure.txt`. |
-| `src/utils/checkCoverage.js` | Parses **coverage/clover.xml** and throws if total statement coverage < threshold (default 90 %). |
-### How the agent should call them
+* **Section numbers** let LLM agents cite specific rules.  
+* Small tables are faster for the model to parse.  
+* A *“self-termination clause”* prevents infinite loops in autonomous runs.  
+* Clear “Forbidden areas” stops agents from wrecking docs/specs.
 
-# read-only inspection
-yarn tree
+---
 
-# spot-check a lexer rule you’re editing
-yarn diag "html`<h1>${name}</h1>`"
+### 2.3  Follow-up tickets (human + AI)
 
-## ⚝ Next Steps 
+| Ticket | Owner suggestion |
+|-------|------------------|
+| Add `repository` + `bugs` fields in `package.json` | human |
+| Publish **typed** `dist/` build to npm (ESM + CJS) | human |
+| Write GitHub issue & PR templates – extracted from AGENTS.md §4 | AI can draft |
+| Automate badge for **bench Δ** (fail > 5 %) via `gh-actions/compare-performance` | AI |
+| Replace ASCII tree in README with collapsible `<details>` tag | AI |
 
-* Update README.md for:
-   [![CI](https://github.com/jick666/Lexinator/actions/workflows/ci.yml/badge.svg)](https://github.com/jick666/Lexinator/actions)
-   [![npm v](https://img.shields.io/npm/v/lexinator?logo=npm)](https://www.npmjs.com/package/lexinator)
-  To accurately reflect the current status of this package.
-* Starting Phasing out JS, ensuring this package is solely functional on TS.
-* optimize AGENTS.md 
+---
