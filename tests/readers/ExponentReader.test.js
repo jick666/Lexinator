@@ -1,5 +1,5 @@
 import { CharStream } from "../../src/lexer/CharStream.js";
-import { ExponentReader } from "../../src/lexer/ExponentReader.js";
+import { ExponentReader } from "../../src/lexer/number/ExponentReader.js";
 import { expectToken, expectNull } from "../utils/readerTestUtils.js";
 
 test.each([

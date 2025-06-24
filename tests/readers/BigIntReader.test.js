@@ -1,4 +1,4 @@
-import { BigIntReader } from "../../src/lexer/BigIntReader.js";
+import { BigIntReader } from "../../src/lexer/number/BigIntReader.js";
 import { expectToken, expectNull } from "../utils/readerTestUtils.js";
 
 const tokenCases = [

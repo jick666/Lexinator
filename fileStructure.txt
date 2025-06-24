@@ -1,143 +1,220 @@
 📂 Lexinator
-╠══ 📄 .eslintrc.cjs
-╠══ 📄 .gitignore
-╠══╗ 📂 .husky
-║  ╚══ 📄 pre-commit
-╠══ 📄 .releaserc
-╠══ 📄 commitlint.config.js
-╠══╗ 📂 docs
-║  ╠══ 📄 INCREMENTAL_STATE.md
-║  ╠══ 📄 LEXER_SPEC.md
-║  ╚══ 📄 PLUGIN_API.md
-╠══ 📄 index.js
-╠══ 📄 jest.config.cjs
-╠══ 📄 package.json
-╠══ 📄 README.md
-╠══╗ 📂 src
-║  ╠══╗ 📂 grammar
-║  ║  ╚══ 📄 JavaScriptGrammar.js
-║  ╠══╗ 📂 integration
-║  ║  ╠══ 📄 BaseIncrementalLexer.js
-║  ║  ╠══ 📄 BufferedIncrementalLexer.js
-║  ║  ╠══ 📄 IncrementalLexer.js
-║  ║  ╠══ 📄 stateUtils.js
-║  ║  ╠══ 📄 TokenStream.js
-║  ║  ╚══ 📄 tokenUtils.js
-║  ╠══╗ 📂 lexer
-║  ║  ╠══ 📄 BigIntReader.js
-║  ║  ╠══ 📄 BinaryReader.js
-║  ║  ╠══ 📄 BindOperatorReader.js
-║  ║  ╠══ 📄 ByteOrderMarkReader.js
-║  ║  ╠══ 📄 CharStream.js
-║  ║  ╠══ 📄 CommentReader.js
-║  ║  ╠══ 📄 DecimalLiteralReader.js
-║  ║  ╠══ 📄 defaultReaders.js
-║  ║  ╠══ 📄 DoExpressionReader.js
-║  ║  ╠══ 📄 ExponentReader.js
-║  ║  ╠══ 📄 FunctionSentReader.js
-║  ║  ╠══ 📄 HexReader.js
-║  ║  ╠══ 📄 HTMLCommentReader.js
-║  ║  ╠══ 📄 IdentifierReader.js
-║  ║  ╠══ 📄 ImportAssertionReader.js
-║  ║  ╠══ 📄 ImportCallReader.js
-║  ║  ╠══ 📄 ImportMetaReader.js
-║  ║  ╠══ 📄 JSXReader.js
-║  ║  ╠══ 📄 LexerEngine.js
-║  ║  ╠══ 📄 LexerError.js
-║  ║  ╠══ 📄 ModuleBlockReader.js
-║  ║  ╠══ 📄 NumberReader.js
-║  ║  ╠══ 📄 NumericSeparatorReader.js
-║  ║  ╠══ 📄 OctalReader.js
-║  ║  ╠══ 📄 OperatorReader.js
-║  ║  ╠══ 📄 PatternMatchReader.js
-║  ║  ╠══ 📄 PipelineOperatorReader.js
-║  ║  ╠══ 📄 PrivateIdentifierReader.js
-║  ║  ╠══ 📄 PunctuationReader.js
-║  ║  ╠══ 📄 RadixReader.js
-║  ║  ╠══ 📄 RecordAndTupleReader.js
-║  ║  ╠══ 📄 RegexOrDivideReader.js
-║  ║  ╠══ 📄 ShebangReader.js
-║  ║  ╠══ 📄 SourceMappingURLReader.js
-║  ║  ╠══ 📄 StringReader.js
-║  ║  ╠══ 📄 TemplateStringReader.js
-║  ║  ╠══ 📄 Token.js
-║  ║  ╠══ 📄 TokenReader.js
-║  ║  ╠══ 📄 UnicodeEscapeIdentifierReader.js
-║  ║  ╠══ 📄 UnicodeIdentifierReader.js
-║  ║  ╠══ 📄 UnicodeWhitespaceReader.js
-║  ║  ╠══ 📄 UsingStatementReader.js
-║  ║  ╠══ 📄 utils.js
-║  ║  ╚══ 📄 WhitespaceReader.js
-║  ╠══╗ 📂 plugins
-║  ║  ╠══╗ 📂 common
-║  ║  ║  ╠══ 📄 TSDecoratorReader.js
-║  ║  ║  ╚══ 📄 TypeAnnotationReader.js
-║  ║  ╠══ 📄 DecoratorPlugin.js
-║  ║  ╠══╗ 📂 flow
-║  ║  ║  ╚══ 📄 FlowTypePlugin.js
-║  ║  ╠══╗ 📂 importmeta
-║  ║  ║  ╚══ 📄 ImportMetaPlugin.js
-║  ║  ╚══╗ 📂 typescript
-║  ║     ╚══ 📄 TypeScriptPlugin.js
-║  ╚══╗ 📂 utils
-║     ╚══ 📄 checkCoverage.js
-╠══╗ 📂 tests
-║  ╠══╗ 📂 benchmarks
-║  ║  ╚══ 📄 lexer.bench.js
-║  ╠══ 📄 BufferedIncrementalLexer.test.js
-║  ╠══ 📄 checkCoverage.test.js
-║  ╠══ 📄 cli.test.js
-║  ╠══ 📄 decoratorPlugin.test.js
-║  ╠══ 📄 engine.test.js
-║  ╠══ 📄 errorRecovery.test.js
-║  ╠══╗ 📂 fixtures
-║  ║  ╠══ 📄 lexer_engine.js
-║  ║  ╚══ 📄 template_string_reader.js
-║  ╠══ 📄 flowTypePlugin.test.js
-║  ╠══ 📄 fuzz.test.js
-║  ╠══ 📄 importMetaPlugin.test.js
-║  ╠══ 📄 incremental.test.js
-║  ╠══ 📄 integration.test.js
-║  ╠══ 📄 lexerError.test.js
-║  ╠══ 📄 plugin.test.js
-║  ╠══╗ 📂 readers
-║  ║  ╠══ 📄 BigIntReader.test.js
-║  ║  ╠══ 📄 BinaryReader.test.js
-║  ║  ╠══ 📄 BindOperatorReader.test.js
-║  ║  ╠══ 📄 ByteOrderMarkReader.test.js
-║  ║  ╠══ 📄 CharStream.test.js
-║  ║  ╠══ 📄 CommentReader.test.js
-║  ║  ╠══ 📄 DecimalLiteralReader.test.js
-║  ║  ╠══ 📄 DoExpressionReader.test.js
-║  ║  ╠══ 📄 ExponentReader.test.js
-║  ║  ╠══ 📄 FunctionSentReader.test.js
-║  ║  ╠══ 📄 HexReader.test.js
-║  ║  ╠══ 📄 HTMLCommentReader.test.js
-║  ║  ╠══ 📄 IdentifierReader.test.js
-║  ║  ╠══ 📄 ImportAssertionReader.test.js
-║  ║  ╠══ 📄 ImportMetaReader.test.js
-║  ║  ╠══ 📄 JSXReader.test.js
-║  ║  ╠══ 📄 ModuleBlockReader.test.js
-║  ║  ╠══ 📄 NumberReader.test.js
-║  ║  ╠══ 📄 NumericSeparatorReader.test.js
-║  ║  ╠══ 📄 OctalReader.test.js
-║  ║  ╠══ 📄 OperatorReader.test.js
-║  ║  ╠══ 📄 PatternMatchReader.test.js
-║  ║  ╠══ 📄 PipelineOperatorReader.test.js
-║  ║  ╠══ 📄 PrivateIdentifierReader.test.js
-║  ║  ╠══ 📄 PunctuationReader.test.js
-║  ║  ╠══ 📄 RecordAndTupleReader.test.js
-║  ║  ╠══ 📄 RegexOrDivideReader.test.js
-║  ║  ╠══ 📄 ShebangReader.test.js
-║  ║  ╠══ 📄 SourceMappingURLReader.test.js
-║  ║  ╠══ 📄 StringReader.test.js
-║  ║  ╠══ 📄 TemplateStringReader.test.js
-║  ║  ╠══ 📄 UnicodeEscapeIdentifierReader.test.js
-║  ║  ╠══ 📄 UnicodeIdentifierReader.test.js
-║  ║  ╠══ 📄 UnicodeWhitespaceReader.test.js
-║  ║  ╠══ 📄 UsingStatementReader.test.js
-║  ║  ╚══ 📄 WhitespaceReader.test.js
-║  ╠══ 📄 token.test.js
-║  ╠══ 📄 tokenStream.test.js
-║  ╚══ 📄 typescriptPlugin.test.js
-╚══ 📄 tsconfig.json
+├── AGENTS.md
+├── README.md
+├── commitlint.config.js
+├── docs
+│   ├── INCREMENTAL_STATE.md
+│   ├── LEXER_SPEC.md
+│   └── PLUGIN_API.md
+├── fileStructure.txt
+├── jest.config.cjs
+├── package.json
+├── src
+│   ├── grammar
+│   │   ├── JavaScriptGrammar.js
+│   │   └── JavaScriptGrammar.ts
+│   ├── index.js
+│   ├── index.ts
+│   ├── integration
+│   │   ├── BaseIncrementalLexer.js
+│   │   ├── BaseIncrementalLexer.ts
+│   │   ├── BufferedIncrementalLexer.js
+│   │   ├── BufferedIncrementalLexer.ts
+│   │   ├── IncrementalLexer.js
+│   │   ├── IncrementalLexer.ts
+│   │   ├── TokenStream.js
+│   │   ├── TokenStream.ts
+│   │   ├── stateUtils.js
+│   │   ├── stateUtils.ts
+│   │   ├── tokenUtils.js
+│   │   └── tokenUtils.ts
+│   ├── lexer
+│   │   ├── BindOperatorReader.js
+│   │   ├── BindOperatorReader.ts
+│   │   ├── ByteOrderMarkReader.js
+│   │   ├── ByteOrderMarkReader.ts
+│   │   ├── CharStream.js
+│   │   ├── CharStream.ts
+│   │   ├── CommentReader.js
+│   │   ├── CommentReader.ts
+│   │   ├── DoExpressionReader.js
+│   │   ├── DoExpressionReader.ts
+│   │   ├── FunctionSentReader.js
+│   │   ├── FunctionSentReader.ts
+│   │   ├── HTMLCommentReader.js
+│   │   ├── HTMLCommentReader.ts
+│   │   ├── IdentifierReader.js
+│   │   ├── IdentifierReader.ts
+│   │   ├── ImportAssertionReader.js
+│   │   ├── ImportAssertionReader.ts
+│   │   ├── ImportCallReader.js
+│   │   ├── ImportCallReader.ts
+│   │   ├── ImportMetaReader.js
+│   │   ├── ImportMetaReader.ts
+│   │   ├── JSXReader.js
+│   │   ├── JSXReader.ts
+│   │   ├── LexerEngine.js
+│   │   ├── LexerEngine.ts
+│   │   ├── LexerError.js
+│   │   ├── LexerError.ts
+│   │   ├── ModuleBlockReader.js
+│   │   ├── ModuleBlockReader.ts
+│   │   ├── OperatorReader.js
+│   │   ├── OperatorReader.ts
+│   │   ├── PatternMatchReader.js
+│   │   ├── PatternMatchReader.ts
+│   │   ├── PipelineOperatorReader.js
+│   │   ├── PipelineOperatorReader.ts
+│   │   ├── PrivateIdentifierReader.js
+│   │   ├── PrivateIdentifierReader.ts
+│   │   ├── PunctuationReader.js
+│   │   ├── PunctuationReader.ts
+│   │   ├── RecordAndTupleReader.js
+│   │   ├── RecordAndTupleReader.ts
+│   │   ├── RegexOrDivideReader.js
+│   │   ├── RegexOrDivideReader.ts
+│   │   ├── ShebangReader.js
+│   │   ├── ShebangReader.ts
+│   │   ├── SourceMappingURLReader.js
+│   │   ├── SourceMappingURLReader.ts
+│   │   ├── StringReader.js
+│   │   ├── StringReader.ts
+│   │   ├── TemplateStringReader.js
+│   │   ├── TemplateStringReader.ts
+│   │   ├── Token.js
+│   │   ├── Token.ts
+│   │   ├── TokenReader.js
+│   │   ├── TokenReader.ts
+│   │   ├── UnicodeEscapeIdentifierReader.js
+│   │   ├── UnicodeEscapeIdentifierReader.ts
+│   │   ├── UnicodeIdentifierReader.js
+│   │   ├── UnicodeIdentifierReader.ts
+│   │   ├── UnicodeWhitespaceReader.js
+│   │   ├── UnicodeWhitespaceReader.ts
+│   │   ├── UsingStatementReader.js
+│   │   ├── UsingStatementReader.ts
+│   │   ├── WhitespaceReader.js
+│   │   ├── WhitespaceReader.ts
+│   │   ├── defaultReaders.js
+│   │   ├── defaultReaders.ts
+│   │   ├── number
+│   │   │   ├── BigIntReader.js
+│   │   │   ├── BigIntReader.ts
+│   │   │   ├── BinaryReader.js
+│   │   │   ├── BinaryReader.ts
+│   │   │   ├── DecimalLiteralReader.js
+│   │   │   ├── DecimalLiteralReader.ts
+│   │   │   ├── ExponentReader.js
+│   │   │   ├── ExponentReader.ts
+│   │   │   ├── HexReader.js
+│   │   │   ├── HexReader.ts
+│   │   │   ├── NumberReader.js
+│   │   │   ├── NumberReader.ts
+│   │   │   ├── NumericSeparatorReader.js
+│   │   │   ├── NumericSeparatorReader.ts
+│   │   │   ├── OctalReader.js
+│   │   │   ├── OctalReader.ts
+│   │   │   ├── RadixReader.js
+│   │   │   └── RadixReader.ts
+│   │   ├── utils.js
+│   │   └── utils.ts
+│   ├── pluginManager.js
+│   ├── pluginManager.ts
+│   ├── plugins
+│   │   ├── DecoratorPlugin.js
+│   │   ├── DecoratorPlugin.ts
+│   │   ├── common
+│   │   │   ├── TSDecoratorReader.js
+│   │   │   ├── TSDecoratorReader.ts
+│   │   │   ├── TypeAnnotationReader.js
+│   │   │   └── TypeAnnotationReader.ts
+│   │   ├── flow
+│   │   │   ├── FlowTypePlugin.js
+│   │   │   └── FlowTypePlugin.ts
+│   │   ├── importmeta
+│   │   │   ├── ImportMetaPlugin.js
+│   │   │   └── ImportMetaPlugin.ts
+│   │   └── typescript
+│   │       ├── TypeScriptPlugin.js
+│   │       └── TypeScriptPlugin.ts
+│   └── utils
+│       ├── checkCoverage.js
+│       ├── checkCoverage.ts
+│       ├── diagnostics.js
+│       ├── diagnostics.ts
+│       ├── tokenAnalysis.js
+│       └── tokenAnalysis.ts
+├── tests
+│   ├── BaseIncrementalLexer.test.js
+│   ├── BufferedIncrementalLexer.test.js
+│   ├── TokenReader.test.js
+│   ├── benchmarks
+│   │   ├── lexer.bench.js
+│   │   ├── readers.bench.js
+│   │   └── realworld.bench.js
+│   ├── checkCoverage.test.js
+│   ├── cli.test.ts
+│   ├── customFactory.test.js
+│   ├── decoratorPlugin.test.ts
+│   ├── diagnostics.test.js
+│   ├── engine.test.js
+│   ├── errorRecovery.test.js
+│   ├── fixtures
+│   │   ├── lexer_engine.js
+│   │   └── template_string_reader.js
+│   ├── flowTypePlugin.test.js
+│   ├── fuzz.test.js
+│   ├── importMetaPlugin.test.js
+│   ├── incremental.test.ts
+│   ├── integration.test.ts
+│   ├── lexerError.test.js
+│   ├── lexerUtils.test.js
+│   ├── plugin.test.js
+│   ├── readers
+│   │   ├── BigIntReader.test.js
+│   │   ├── BindOperatorReader.test.js
+│   │   ├── ByteOrderMarkReader.test.js
+│   │   ├── CharStream.test.js
+│   │   ├── CommentReader.test.js
+│   │   ├── DecimalLiteralReader.test.js
+│   │   ├── DoExpressionReader.test.js
+│   │   ├── ExponentReader.test.js
+│   │   ├── FunctionSentReader.test.js
+│   │   ├── HTMLCommentReader.test.js
+│   │   ├── IdentifierReader.test.js
+│   │   ├── ImportAssertionReader.test.js
+│   │   ├── ImportCallReader.test.js
+│   │   ├── ImportMetaReader.test.js
+│   │   ├── JSXReader.test.js
+│   │   ├── ModuleBlockReader.test.js
+│   │   ├── NumberReader.test.js
+│   │   ├── NumericSeparatorReader.test.js
+│   │   ├── OperatorReader.test.js
+│   │   ├── PatternMatchReader.test.js
+│   │   ├── PipelineOperatorReader.test.js
+│   │   ├── PrivateIdentifierReader.test.js
+│   │   ├── PunctuationReader.test.js
+│   │   ├── RadixReader.test.js
+│   │   ├── RecordAndTupleReader.test.js
+│   │   ├── RegexOrDivideReader.test.js
+│   │   ├── ShebangReader.test.js
+│   │   ├── SourceMappingURLReader.test.js
+│   │   ├── StringReader.test.js
+│   │   ├── TemplateStringReader.test.js
+│   │   ├── TypeAnnotationReader.test.js
+│   │   ├── UnicodeEscapeIdentifierReader.test.js
+│   │   ├── UnicodeIdentifierReader.test.js
+│   │   ├── UnicodeWhitespaceReader.test.js
+│   │   ├── UsingStatementReader.test.js
+│   │   └── WhitespaceReader.test.js
+│   ├── stateUtils.test.js
+│   ├── token.test.ts
+│   ├── tokenAnalysis.test.js
+│   ├── tokenStream.test.ts
+│   ├── typescriptPlugin.test.js
+│   └── utils
+│       ├── integrationCases.js
+│       ├── readerTestUtils.js
+│       └── tokenTypeUtils.js
+├── tsconfig.json
+└── yarn.lock
