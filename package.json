@@ -43,6 +43,8 @@
     "@jest/globals": "^29.7.0",
     "@octokit/rest": "^20.0.0",
     "@types/node": "^24.0.3",
+    "@typescript-eslint/eslint-plugin": "^8.35.0",
+    "@typescript-eslint/parser": "^8.35.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
     "husky": "^9.1.7",
