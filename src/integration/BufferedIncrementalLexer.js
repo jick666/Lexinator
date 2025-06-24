@@ -2,6 +2,7 @@
 
 import { BaseIncrementalLexer } from './BaseIncrementalLexer.js';
 import { LexerError } from '../lexer/LexerError.js';
+import { processToken } from './tokenUtils.js';
 
 function isIncompleteBlockComment(token, stream) {
   return (
@@ -45,19 +46,10 @@ export class BufferedIncrementalLexer extends BaseIncrementalLexer {
         break;
       }
 
-      // Trivia handling with lazy allocation.
-      if (token.type === 'WHITESPACE') {
-        this.trivia.push(token);
-        continue;
-      }
-
-      if (this.trivia.length) token.attachLeading(this.trivia);
-      if (this.tokens.length && this.trivia.length) {
-        this.tokens[this.tokens.length - 1].attachTrailing(this.trivia);
-      }
-      this.trivia = [];
-
-      this.emit(token);
+      const prev = this.tokens.length ? this.tokens[this.tokens.length - 1] : null;
+      const out = processToken(token, this.trivia, prev);
+      if (!out) continue;
+      this.emit(out);
     }
   }
 

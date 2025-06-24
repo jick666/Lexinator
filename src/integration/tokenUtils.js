@@ -1,8 +1,21 @@
 // src/integration/tokenUtils.js
 
+export function processToken(token, trivia, prev) {
+  if (token.type === 'WHITESPACE') {
+    trivia.push(token);
+    return null;
+  }
+
+  if (trivia.length) token.attachLeading([...trivia]);
+  if (prev && trivia.length) prev.attachTrailing([...trivia]);
+
+  trivia.length = 0;
+  return token;
+}
+
 export function* tokenIterator(engine) {
-  let trivia = [];
-  let prev   = null;
+  const trivia = [];
+  let prev = null;
 
   while (true) {
     const tok = engine.nextToken();
@@ -11,17 +24,11 @@ export function* tokenIterator(engine) {
       return;
     }
 
-    if (tok.type === 'WHITESPACE') {
-      trivia.push(tok);
-      continue;
-    }
+    const out = processToken(tok, trivia, prev);
+    if (!out) continue;
 
-    if (trivia.length) tok.attachLeading(trivia);
-    if (prev && trivia.length) prev.attachTrailing(trivia);
-
-    trivia = [];
-    prev   = tok;
-    yield tok;
+    prev = out;
+    yield out;
   }
 }
 
