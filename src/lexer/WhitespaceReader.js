@@ -1,11 +1,6 @@
 // src/lexer/WhitespaceReader.js          (rewritten ✨)
-const WS = new Set([' ','\n','\t','\r','\v','\f']);
+import { createWhitespaceReader } from './utils.js';
 
-export function WhitespaceReader(stream, factory) {
-  const start = stream.getPosition();
-  if (!WS.has(stream.current())) return null;
+const WS = new Set([' ', '\n', '\t', '\r', '\v', '\f']);
 
-  const buf = [];
-  while (!stream.eof() && WS.has(stream.current())) { buf.push(stream.current()); stream.advance(); }
-  return factory('WHITESPACE', buf.join(''), start, stream.getPosition());
-}
+export const WhitespaceReader = createWhitespaceReader(ch => WS.has(ch));

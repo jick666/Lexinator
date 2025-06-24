@@ -1,5 +1,5 @@
 // ────────────────────────────────────────────────────────────
-// src/lexer/utils.js 
+// src/lexer/utils.js
 // ────────────────────────────────────────────────────────────
 
 /* ── generic helpers ──────────────────────────────────────── */
@@ -135,5 +135,19 @@ export function makeIdentifierReader({ unicode = false, allowEscape = false, bai
     const value = consumeIdentifierLike(stream, { unicode, allowEscape });
     if (value === null) return null;
     return factory('IDENTIFIER', value, start, stream.getPosition());
+  };
+}
+
+/** Factory to create whitespace readers */
+export function createWhitespaceReader(testFn) {
+  return function whitespaceReader(stream, factory) {
+    const start = stream.getPosition();
+    if (!testFn(stream.current())) return null;
+    const buf = [];
+    while (!stream.eof() && testFn(stream.current())) {
+      buf.push(stream.current());
+      stream.advance();
+    }
+    return factory('WHITESPACE', buf.join(''), start, stream.getPosition());
   };
 }
