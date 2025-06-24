@@ -39,6 +39,8 @@ The agent container sets `HUSKY=0` so Git hooks never block.
 | `node src/utils/checkCoverage.js` | Fail if < threshold coverage. |
 | `yarn tree` | Generate / update `fileStructure.txt` (directory map). |
 | `yarn diag` | Diagnostics CLI. |
+| `yarn format` | Apply Prettier formatting. |
+| `yarn format:check` | Verify Prettier formatting. |
 | `yarn workflow` | Umbrella: lint → test → coverage → bench. |
 
 Use **Yarn v4** for all project scripts; npm is not used for development.
@@ -65,7 +67,8 @@ node src/utils/diagnostics.js "foo |> bar"
 1. `yarn install`
 2. `yarn tree` → skim the generated `fileStructure.txt` so you know the lay of the land.
 3. `node src/utils/diagnostics.js "let x = 1"` to confirm the lexer still works.
-4. `yarn workflow` (fails fast if lint/test/bench regress).
+4. `yarn format:check`
+5. `yarn workflow` (fails fast if lint/test/bench regress).
 
 If any step fails **stop** and surface the error; do **not** open a PR.
 ## 🧰  Script reference

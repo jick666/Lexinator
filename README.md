@@ -95,6 +95,8 @@ Run the following Yarn commands to keep the project in shape:
 ```bash
 - `yarn lint` – run ESLint over the entire codebase.
 - `yarn test` – execute the Jest suite with coverage enabled.
+- `yarn format` – apply Prettier formatting.
+- `yarn format:check` – verify Prettier formatting.
 - `yarn workflow` – lint, test, check coverage and benchmark.
 - `yarn diag` – inspect tokenisation via the diagnostics CLI.
 - `yarn tree` – update `fileStructure.txt` to reflect the repository layout.
