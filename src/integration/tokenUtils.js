@@ -24,3 +24,12 @@ export function* tokenIterator(engine) {
     yield tok;
   }
 }
+
+export function collectTokens(engine, onToken) {
+  const tokens = [];
+  for (const tok of tokenIterator(engine)) {
+    tokens.push(tok);
+    if (onToken) onToken(tok);
+  }
+  return tokens;
+}

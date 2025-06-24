@@ -4,7 +4,7 @@ import { LexerEngine } from "./lexer/LexerEngine.js";
 import { IncrementalLexer } from "./integration/IncrementalLexer.js";
 import { BufferedIncrementalLexer } from "./integration/BufferedIncrementalLexer.js";
 import { createTokenStream, TokenStream } from "./integration/TokenStream.js";
-import { tokenIterator } from "./integration/tokenUtils.js";
+import { collectTokens } from "./integration/tokenUtils.js";
 import { fileURLToPath } from "url";
 import { registerPlugin, clearPlugins } from "./pluginManager.js";
 
@@ -20,12 +20,9 @@ export function tokenize(
 ) {
   const stream = new CharStream(code, { sourceURL });
   const lexer = new LexerEngine(stream, { errorRecovery });
-  const tokens = [];
-  for (const tok of tokenIterator(lexer)) {
-    tokens.push(tok);
+  return collectTokens(lexer, tok => {
     if (verbose) console.log(tok);
-  }
-  return tokens;
+  });
 }
 
 export { IncrementalLexer, BufferedIncrementalLexer, TokenStream, createTokenStream };
