@@ -1,273 +1,69 @@
+# Lexinator 🦎
+[![CI](https://github.com/jick666/Lexinator/actions/workflows/ci.yml/badge.svg)](…)
+[![Coverage ≥ 100 %](https://img.shields.io/badge/coverage-100%25-brightgreen)](…)
+[![npm](https://img.shields.io/npm/v/lexinator)](https://www.npmjs.com/package/lexinator)
+![license](https://img.shields.io/github/license/jick666/Lexinator)
 
-# Lexinator 🦖
-[![CI](https://github.com/jick666/Lexinator/actions/workflows/ci.yml/badge.svg)](https://github.com/jick666/Lexinator/actions)
-[![coverage 100%](https://img.shields.io/badge/coverage-100%25-brightgreen)](./coverage)
-[![yarn](https://img.shields.io/npm/v/lexinator?logo=yarn&label=yarn)](https://www.npmjs.com/package/lexinator)
-
-> **Note**: The repository uses Yarn as the sole package manager.
-
-*Modular, incremental&hairsp;/&hairsp;buffered lexer with experiment-grade plug-ability.*
-> **Note**: JavaScript builds are being phased out. Lexinator is now developed and distributed as a TypeScript-only package.
+Modular, **incremental JavaScript lexer** with experiment-grade plug-ability and 100 % coverage.
 
 ---
 
-## Features
-- **Stateless Readers → Hot path speed** – every lexical rule lives in its own file, no globals.
-- **Incremental & streaming modes** – tokenise as you type or as a Node stream.
-- **Plugin API** – Flow, TypeScript, Stage-3 proposals, decorators… drop-in readers.
-- **Diagnostics CLI** – colourised token dump, nesting depth, trivia visualiser, REPL.
-- **100 % test coverage** – enforced in CI.
-- **Bench regression guard** – fails CI if the lexer slows by > 10 %.
-- **Written in TypeScript** – all source modules are implemented in TypeScript.
-- **JavaScript support deprecated** – future releases will ship TypeScript-only builds.
-
-## Requirements
-
-- Node.js v18 or newer
-- Yarn v4
+## ✨ Highlights
+| Feature | Why it matters |
+|---------|----------------|
+| **Stateless readers** | Hot-path speed – each rule self-contained, no globals |
+| **Incremental & streaming** | Tokenise *as you type* or as a Node stream |
+| **Plugin API** | Flow / TS / stage-3 proposals as drop-ins |
+| **Diagnostics CLI** | Colourised token dump, nesting depth, trivia visualiser, REPL |
+| **Perf & quality gates** | CI fails if coverage < 90 % or lexer slows by > 10 % |
 
 ---
 
-## Quick start
+## 🚀 Quick start
 
-Run `yarn install` to set up dependencies (Yarn v4).
-
+corepack enable   # if Yarn isn't global
+yarn install      # Yarn 4
 yarn add lexinator
 
+node - <<'JS'
 import { tokenize } from 'lexinator';
+console.log(tokenize('a |> b ?? 1n'));
+JS
+CLI
 
-const src = 'a |> b ?? 1n';
-console.log(tokenize(src));
-/*
-[
-  { type:'IDENTIFIER', value:'a', … },
-  { type:'PIPELINE_OPERATOR', value:'|>', … },
-  …
-]
-*/
-
-## CLI
-
-yarn diag "html`<h1>${name}</h1>`"
-# or
-cat file.js | node src/utils/diagnostics.js --trivia
-(Run the diagnostics script directly or via `yarn diag`.)
-
-## Incremental / buffered lexing
-
-import { IncrementalLexer } from 'lexinator';
-
-const inc = new IncrementalLexer({
-  onToken: t => console.log(t.type, t.value.slice(0,10))
-});
-inc.feed('const x = 4');
-inc.feed('2;');
-## Plugins
+yarn diag "html\`<h1>${name}</h1>\`"
+cat file.js | yarn diag --trivia
+🧩 Plugins
 
 import { registerPlugin, clearPlugins } from 'lexinator';
 import { TypeScriptPlugin } from 'lexinator/plugins/typescript';
 
 registerPlugin(TypeScriptPlugin);
-const tsTokens = tokenize('let a: number = 1');
+const tokens = tokenize('let a: number = 1');
 clearPlugins();
-Authoring a plugin? See AGENTS.md → “Plugin” for the contract.
+See docs/PLUGIN_API.md for contract details.
 
-### Custom token factory
+🛠 Development scripts
 
-Instrument token creation by supplying `createToken` when constructing a lexer:
+yarn lint       # ESLint everywhere
+yarn test       # Jest w/ coverage
+yarn workflow   # lint ➜ test ➜ bench guard
+yarn tree       # regenerate fileStructure.txt
+🗂 Project layout (top-level)
 
-```javascript
-import { createTokenStream } from 'lexinator';
-import { Token } from 'lexinator/src/lexer/Token.js';
+.github/workflows   CI + benchmark guard
+docs/               Incremental state, spec, plugin API
+src/                Lexer engine + readers + plugins
+tests/              600+ Jest cases & benches
+AGENTS.md           Agent operating manual
+🤝 Contributing
+Fork & branch.
 
-const seen = [];
-createTokenStream('let x = 1;', {
-  createToken(type, val, start, end, url) {
-    const tok = new Token(type, val, start, end, url);
-    seen.push(tok);
-    return tok;
-  }
-});
-```
+yarn workflow must pass.
 
-# Development scripts
+Follow commit-lint (feat|fix|perf|refactor(scope): message).
 
-Run the following Yarn commands to keep the project in shape:
+Open a PR – CI + benchmark guard will gate.
 
-```bash
-- `yarn lint` – run ESLint over the entire codebase.
-- `yarn test` – execute the Jest suite with coverage enabled.
-- `yarn format` – apply Prettier formatting.
-- `yarn format:check` – verify Prettier formatting.
-- `yarn workflow` – lint, test, check coverage and benchmark.
-- `yarn diag` – inspect tokenisation via the diagnostics CLI.
-- `yarn tree` – update `fileStructure.txt` to reflect the repository layout.
-```
-
-#Project layout
-
-#Project layout
-📂 Lexinator
-╠══ 📄 .eslintrc.cjs
-╠══╗ 📂 .github
-║  ╚══╗ 📂 workflows
-║     ╠══ 📄 ci.yml
-║     ╚══╗ 📂 scripts
-║        ╚══ 📄 genTree.js
-╠══ 📄 .gitignore
-╠══╗ 📂 .husky
-║  ╠══ 📄 pre-commit
-║  ╚═══ 📂 ..
-╠══ 📄 .releaserc
-╠══╗ 📂 .yarn
-║  ╚══ 📄 install-state.gz
-╠══ 📄 .yarnrc.yml
-╠══ 📄 AGENTS.md
-╠══ 📄 commitlint.config.js
-╠══╗ 📂 coverage
-║  ╠══ ..
-╠══╗ 📂 docs
-║  ╠══ 📄 INCREMENTAL_STATE.md
-║  ╠══ 📄 LEXER_SPEC.md
-║  ╚══ 📄 PLUGIN_API.md
-╠══ 📄 fileStructure.txt
-╠══ 📄 jest.config.cjs
-╠══ 📄 package.json
-╠══ 📄 README.md
-╠══╗ 📂 src
-║  ╠══╗ 📂 grammar
-║  ║  ╚══ 📄 JavaScriptGrammar.js
-║  ╠══ 📄 index.js
-║  ╠══╗ 📂 integration
-║  ║  ╠══ 📄 BaseIncrementalLexer.js
-║  ║  ╠══ 📄 BufferedIncrementalLexer.js
-║  ║  ╠══ 📄 IncrementalLexer.js
-║  ║  ╠══ 📄 stateUtils.js
-║  ║  ╠══ 📄 TokenStream.js
-║  ║  ╚══ 📄 tokenUtils.js
-║  ╠══╗ 📂 lexer
-║  ║  ╠══ 📄 BigIntReader.js
-║  ║  ╠══ 📄 BinaryReader.js
-║  ║  ╠══ 📄 BindOperatorReader.js
-║  ║  ╠══ 📄 ByteOrderMarkReader.js
-║  ║  ╠══ 📄 CharStream.js
-║  ║  ╠══ 📄 CommentReader.js
-║  ║  ╠══ 📄 DecimalLiteralReader.js
-║  ║  ╠══ 📄 defaultReaders.js
-║  ║  ╠══ 📄 DoExpressionReader.js
-║  ║  ╠══ 📄 ExponentReader.js
-║  ║  ╠══ 📄 FunctionSentReader.js
-║  ║  ╠══ 📄 HexReader.js
-║  ║  ╠══ 📄 HTMLCommentReader.js
-║  ║  ╠══ 📄 IdentifierReader.js
-║  ║  ╠══ 📄 ImportAssertionReader.js
-║  ║  ╠══ 📄 ImportCallReader.js
-║  ║  ╠══ 📄 ImportMetaReader.js
-║  ║  ╠══ 📄 JSXReader.js
-║  ║  ╠══ 📄 LexerEngine.js
-║  ║  ╠══ 📄 LexerError.js
-║  ║  ╠══ 📄 ModuleBlockReader.js
-║  ║  ╠══ 📄 NumberReader.js
-║  ║  ╠══ 📄 NumericSeparatorReader.js
-║  ║  ╠══ 📄 OctalReader.js
-║  ║  ╠══ 📄 OperatorReader.js
-║  ║  ╠══ 📄 PatternMatchReader.js
-║  ║  ╠══ 📄 PipelineOperatorReader.js
-║  ║  ╠══ 📄 PrivateIdentifierReader.js
-║  ║  ╠══ 📄 PunctuationReader.js
-║  ║  ╠══ 📄 RadixReader.js
-║  ║  ╠══ 📄 RecordAndTupleReader.js
-║  ║  ╠══ 📄 RegexOrDivideReader.js
-║  ║  ╠══ 📄 ShebangReader.js
-║  ║  ╠══ 📄 SourceMappingURLReader.js
-║  ║  ╠══ 📄 StringReader.js
-║  ║  ╠══ 📄 TemplateStringReader.js
-║  ║  ╠══ 📄 Token.js
-║  ║  ╠══ 📄 TokenReader.js
-║  ║  ╠══ 📄 UnicodeEscapeIdentifierReader.js
-║  ║  ╠══ 📄 UnicodeIdentifierReader.js
-║  ║  ╠══ 📄 UnicodeWhitespaceReader.js
-║  ║  ╠══ 📄 UsingStatementReader.js
-║  ║  ╠══ 📄 utils.js
-║  ║  ╚══ 📄 WhitespaceReader.js
-║  ╠══╗ 📂 plugins
-║  ║  ╠══╗ 📂 common
-║  ║  ║  ╠══ 📄 TSDecoratorReader.js
-║  ║  ║  ╚══ 📄 TypeAnnotationReader.js
-║  ║  ╠══ 📄 DecoratorPlugin.js
-║  ║  ╠══╗ 📂 flow
-║  ║  ║  ╚══ 📄 FlowTypePlugin.js
-║  ║  ╠══╗ 📂 importmeta
-║  ║  ║  ╚══ 📄 ImportMetaPlugin.js
-║  ║  ╚══╗ 📂 typescript
-║  ║     ╚══ 📄 TypeScriptPlugin.js
-║  ╚══╗ 📂 utils
-║     ╠══ 📄 checkCoverage.js
-║     ╚══ 📄 diagnostics.js
-╠══╗ 📂 tests
-║  ╠══ 📄 BaseIncrementalLexer.test.js
-║  ╠══╗ 📂 benchmarks
-║  ║  ╚══ 📄 lexer.bench.js
-║  ╠══ 📄 BufferedIncrementalLexer.test.js
-║  ╠══ 📄 checkCoverage.test.js
-║  ╠══ 📄 cli.test.js
-║  ╠══ 📄 decoratorPlugin.test.js
-║  ╠══ 📄 diagnostics.test.js
-║  ╠══ 📄 engine.test.js
-║  ╠══ 📄 errorRecovery.test.js
-║  ╠══╗ 📂 fixtures
-║  ║  ╠══ 📄 lexer_engine.js
-║  ║  ╚══ 📄 template_string_reader.js
-║  ╠══ 📄 flowTypePlugin.test.js
-║  ╠══ 📄 fuzz.test.js
-║  ╠══ 📄 importMetaPlugin.test.js
-║  ╠══ 📄 incremental.test.js
-║  ╠══ 📄 integration.test.js
-║  ╠══ 📄 lexerError.test.js
-║  ╠══ 📄 lexerUtils.test.js
-║  ╠══ 📄 plugin.test.js
-║  ╠══╗ 📂 readers
-║  ║  ╠══ 📄 BigIntReader.test.js
-║  ║  ╠══ 📄 BindOperatorReader.test.js
-║  ║  ╠══ 📄 ByteOrderMarkReader.test.js
-║  ║  ╠══ 📄 CharStream.test.js
-║  ║  ╠══ 📄 CommentReader.test.js
-║  ║  ╠══ 📄 DecimalLiteralReader.test.js
-║  ║  ╠══ 📄 DoExpressionReader.test.js
-║  ║  ╠══ 📄 ExponentReader.test.js
-║  ║  ╠══ 📄 FunctionSentReader.test.js
-║  ║  ╠══ 📄 HTMLCommentReader.test.js
-║  ║  ╠══ 📄 IdentifierReader.test.js
-║  ║  ╠══ 📄 ImportAssertionReader.test.js
-║  ║  ╠══ 📄 ImportMetaReader.test.js
-║  ║  ╠══ 📄 JSXReader.test.js
-║  ║  ╠══ 📄 ModuleBlockReader.test.js
-║  ║  ╠══ 📄 NumberReader.test.js
-║  ║  ╠══ 📄 NumericSeparatorReader.test.js
-║  ║  ╠══ 📄 OperatorReader.test.js
-║  ║  ╠══ 📄 PatternMatchReader.test.js
-║  ║  ╠══ 📄 PipelineOperatorReader.test.js
-║  ║  ╠══ 📄 PrivateIdentifierReader.test.js
-║  ║  ╠══ 📄 PunctuationReader.test.js
-║  ║  ╠══ 📄 RadixReader.test.js
-║  ║  ╠══ 📄 RecordAndTupleReader.test.js
-║  ║  ╠══ 📄 RegexOrDivideReader.test.js
-║  ║  ╠══ 📄 ShebangReader.test.js
-║  ║  ╠══ 📄 SourceMappingURLReader.test.js
-║  ║  ╠══ 📄 StringReader.test.js
-║  ║  ╠══ 📄 TemplateStringReader.test.js
-║  ║  ╠══ 📄 UnicodeEscapeIdentifierReader.test.js
-║  ║  ╠══ 📄 UnicodeIdentifierReader.test.js
-║  ║  ╠══ 📄 UnicodeWhitespaceReader.test.js
-║  ║  ╠══ 📄 UsingStatementReader.test.js
-║  ║  ╚══ 📄 WhitespaceReader.test.js
-║  ╠══ 📄 stateUtils.test.js
-║  ╠══ 📄 token.test.js
-║  ╠══ 📄 tokenStream.test.js
-║  ╠══ 📄 typescriptPlugin.test.js
-║  ╚══╗ 📂 utils
-║     ╠══ 📄 integrationCases.js
-║     ╠══ 📄 readerTestUtils.js
-║     ╚══ 📄 tokenTypeUtils.js
-╠══ 📄 tsconfig.json
-╚══ 📄 yarn.lock
+📜 License
+MIT © 2025 James Lewis
