@@ -93,6 +93,40 @@ export function readDigitsWithUnderscores(stream, mark) {
   return { value: join(buf), underscoreSeen, lastUnderscore };
 }
 
+export function readNumericWithUnderscores(
+  stream,
+  mark,
+  { requireUnderscore = false, suffix = null } = {}
+) {
+  if (suffix) {
+    let idx = stream.index;
+    while (idx < stream.input.length && /[0-9_]/.test(stream.input[idx])) idx++;
+    if (stream.input[idx] !== suffix) return null;
+  }
+
+  const result = readDigitsWithUnderscores(stream, mark);
+  if (!result) return null;
+
+  const { value, underscoreSeen, lastUnderscore } = result;
+
+  if (lastUnderscore || value.startsWith('_') || (requireUnderscore && !underscoreSeen)) {
+    stream.setPosition(mark);
+    return null;
+  }
+
+  let val = value;
+  if (suffix) {
+    if (stream.current() !== suffix) {
+      stream.setPosition(mark);
+      return null;
+    }
+    val += suffix;
+    stream.advance();
+  }
+
+  return { value: val, endPos: stream.getPosition() };
+}
+
 export function readDigits(stream) {
   const buf = [];
   while (isDigit(stream.current())) { buf.push(stream.current()); stream.advance(); }
