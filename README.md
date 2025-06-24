@@ -48,6 +48,7 @@ See docs/PLUGIN_API.md for contract details.
 yarn lint       # ESLint everywhere
 yarn test       # Jest w/ coverage
 yarn workflow   # lint ➜ test ➜ bench guard
+yarn build      # emit JS from TypeScript
 yarn tree       # regenerate fileStructure.txt
 🗂 Project layout (top-level)
 

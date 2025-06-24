@@ -17,7 +17,7 @@
     "start": "node src/index.js",
     "lint": "eslint .",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --config jest.config.cjs --coverage",
-    "build": "echo \"Nothing to build\"",
+    "build": "tsc -p tsconfig.build.json",
     "prepare": "husky",
     "gentree": "node ./.github/workflows/scripts/genTree.js",
     "tree": "yarn gentree",
