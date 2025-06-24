@@ -82,3 +82,12 @@ yarn tree
 
 # spot-check a lexer rule you’re editing
 yarn diag "html`<h1>${name}</h1>`"
+
+# Next Steps for Unit Tests:
+Ensure the following with Unit Tests:
+
+1. Property-based tests with a library like fast-check to replace fuzz.test.js. Today the fuzz only asserts no exception; add expectations such as “tokenising then joining value fields reproduces the original text” or “re-serialising via save/restore yields same tokens”.
+
+2. Cover “stateInput: 'none'” restore path—including error throw when caller forgets to supply input.
+
+3. Golden/snapshot tests for full-file fixtures (multi-language examples, JSX + template + regex combos). This guards against subtler regression than token-count equality.
