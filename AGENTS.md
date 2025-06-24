@@ -93,4 +93,4 @@ yarn diag "html`<h1>${name}</h1>`"
    [![npm v](https://img.shields.io/npm/v/lexinator?logo=npm)](https://www.npmjs.com/package/lexinator)
   To accurately reflect the current status of this package.
 * Starting Phasing out JS, ensuring this package is solely functional on TS.
-* optimize preflight 
+* optimize AGENTS.md 
