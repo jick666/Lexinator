@@ -6,16 +6,16 @@
 
 import { CharStream } from "../src/lexer/CharStream.js";
 import { IdentifierReader } from "../src/lexer/IdentifierReader.js";
-import { NumberReader } from "../src/lexer/NumberReader.js";
+import { NumberReader } from "../src/lexer/number/NumberReader.js";
 import { OperatorReader } from "../src/lexer/OperatorReader.js";
 import { PunctuationReader } from "../src/lexer/PunctuationReader.js";
 import { RegexOrDivideReader } from "../src/lexer/RegexOrDivideReader.js";
 import { TemplateStringReader } from "../src/lexer/TemplateStringReader.js";
 import { WhitespaceReader } from "../src/lexer/WhitespaceReader.js";
-import { BinaryReader } from "../src/lexer/BinaryReader.js";
-import { OctalReader } from "../src/lexer/OctalReader.js";
-import { ExponentReader } from "../src/lexer/ExponentReader.js";
-import { NumericSeparatorReader } from "../src/lexer/NumericSeparatorReader.js";
+import { BinaryReader } from "../src/lexer/number/BinaryReader.js";
+import { OctalReader } from "../src/lexer/number/OctalReader.js";
+import { ExponentReader } from "../src/lexer/number/ExponentReader.js";
+import { NumericSeparatorReader } from "../src/lexer/number/NumericSeparatorReader.js";
 import { UnicodeIdentifierReader } from "../src/lexer/UnicodeIdentifierReader.js";
 import { UnicodeEscapeIdentifierReader } from "../src/lexer/UnicodeEscapeIdentifierReader.js";
 import { ShebangReader } from "../src/lexer/ShebangReader.js";

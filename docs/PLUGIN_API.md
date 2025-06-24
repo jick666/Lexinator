@@ -26,7 +26,7 @@ export const HashPlugin = {
 Register the plugin before constructing a lexer:
 
 ```javascript
-import { registerPlugin, tokenize } from 'experimental-js-lexer';
+import { registerPlugin, tokenize } from 'lexinator';
 import { HashPlugin } from './hash-plugin.js';
 
 registerPlugin(HashPlugin);

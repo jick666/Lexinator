@@ -1,3 +1,6 @@
+// @ts-nocheck
+import { expect, test } from '@jest/globals';
+import { tokenize } from '../src/index.js';
 import { Token } from '../src/lexer/Token.js';
 
 test('Token.toJSON produces plain object', () => {
@@ -18,8 +21,6 @@ test('Token.toJSON produces plain object', () => {
   expect(tok.toJSON()).toEqual(expected);
   expect(JSON.parse(JSON.stringify(tok))).toEqual(expected);
 });
-
-import { tokenize } from '../src/index.js';
 
 test('tokenize includes sourceURL in tokens', () => {
   const toks = tokenize('let a = 1;', { sourceURL: 'foo.js' });

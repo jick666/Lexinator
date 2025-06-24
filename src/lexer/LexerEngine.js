@@ -27,12 +27,15 @@ export class LexerEngine {
 
   constructor(
     stream,
-    { errorRecovery=false, validateUnicodeProperties=false, stateInput='full' }={}
+    { errorRecovery=false, validateUnicodeProperties=false, stateInput='full', createToken }={}
   ){
     this.stream   = stream;
     this.errorRecovery             = !!errorRecovery;
     this.validateUnicodeProperties = !!validateUnicodeProperties;
     this.stateInput                = stateInput;
+    this.createToken               =
+      createToken ||
+      ((type, val, s, e, src) => new Token(type, val, s, e, src));
 
     this.stateStack = ['default'];
     this.buffer     = [];
@@ -104,7 +107,13 @@ export class LexerEngine {
         const mid = { ...start, column:start.column+op.length,
                                 index:start.index+op.length };
 
-        const opTok   = new Token(opType, op, start, mid, tok.sourceURL);
+        const opTok   = this.createToken(
+          opType,
+          op,
+          start,
+          mid,
+          tok.sourceURL
+        );
         const restVal = tok.value.slice(op.length);
 
         /* decide the remainder’s token-type heuristically */
@@ -114,7 +123,13 @@ export class LexerEngine {
         else if(JavaScriptGrammar.operators.includes(restVal))
           restType = restVal===PIPE_OP ? 'PIPELINE_OPERATOR' : 'OPERATOR';
 
-        const tailTok = new Token(restType, restVal, mid, tok.end, tok.sourceURL);
+        const tailTok = this.createToken(
+          restType,
+          restVal,
+          mid,
+          tok.end,
+          tok.sourceURL
+        );
         this.buffer.unshift(tailTok);          // emit after opTok on next pull
         return opTok;
       }
@@ -125,7 +140,8 @@ export class LexerEngine {
   /* ───────── inner loop ───────── */
   _readFromStream(){
     const { stream } = this;
-    const factory = (type,val,s,e)=>new Token(type,val,s,e,stream.sourceURL);
+    const factory = (type, val, s, e) =>
+      this.createToken(type, val, s, e, stream.sourceURL);
 
     while(!stream.eof()){
       const triv=this._readTrivia(factory);

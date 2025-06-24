@@ -18,12 +18,13 @@ export class TokenStream extends Readable {
       CharStream: CharStreamClass = CharStream,
       LexerEngine: LexerEngineClass = LexerEngine,
       iteratorFn = tokenIterator,
-      errorRecovery = false
+      errorRecovery = false,
+      createToken
     } = {}
   ) {
     super({ objectMode: true });
     this.stream = new CharStreamClass(code);
-    this.engine = new LexerEngineClass(this.stream, { errorRecovery });
+    this.engine = new LexerEngineClass(this.stream, { errorRecovery, createToken });
     this.iter = iteratorFn(this.engine);
   }
 

@@ -1,7 +1,7 @@
 import { CharStream } from "../../src/lexer/CharStream.js";
-import { BinaryReader } from "../../src/lexer/BinaryReader.js";
-import { OctalReader } from "../../src/lexer/OctalReader.js";
-import { HexReader } from "../../src/lexer/HexReader.js";
+import { BinaryReader } from "../../src/lexer/number/BinaryReader.js";
+import { OctalReader } from "../../src/lexer/number/OctalReader.js";
+import { HexReader } from "../../src/lexer/number/HexReader.js";
 import { runReader } from "../utils/readerTestUtils.js";
 
 const cases = [

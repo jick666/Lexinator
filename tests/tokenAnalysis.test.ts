@@ -1,3 +1,5 @@
+// @ts-nocheck
+import { expect, test } from '@jest/globals';
 import { tokenize } from '../src/index.js';
 import { analyseTokens, unicodeBad, maxDepth, lineMap } from '../src/utils/tokenAnalysis.js';
 

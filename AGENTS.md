@@ -1,5 +1,5 @@
 # AGENTS.md – Lexinator Contributor & Codex Guide
-Last updated: 2025-06-21
+Last updated: 2025-06-22
 
 ## 🗺️  Project overview
 Lexinator is a **modular JavaScript lexer / incremental tokeniser** built for
@@ -16,7 +16,7 @@ Key folders:
 ## 🔍  Where to change code
 | Task | Touch these paths | Validation |
 |------|------------------|------------|
-| **Core lexing rule** | `src/lexer/*Reader.js` | The test suite covers 1 858 unit cases + fuzz. |
+| **Core lexing rule** | `src/lexer/*Reader.js` | The test suite covers 1 013 unit cases + fuzz. |
 | **Plugin** | new file under `src/plugins/<name>/` | Add to `plugins/<name>/index.js` and unit test. |
 | **Diagnostics CLI** | `diagnostics.js` | `node diagnostics.js --help`. |
 
@@ -41,7 +41,7 @@ The agent container sets `HUSKY=0` so Git hooks never block.
 | `yarn diag` | Diagnostics CLI. |
 | `yarn workflow` | Umbrella: lint → test → coverage → bench. |
 
-*NPM scripts have been removed; use Yarn commands only.*
+Use **Yarn v4** for all project scripts; npm is not used for development.
 
 ## 🤖  Codex playbook
 > *Read by the agent before each task.*
@@ -72,7 +72,7 @@ If any step fails **stop** and surface the error; do **not** open a PR.
 
 | script | location | what it does |
 |--------|----------|--------------|
-| `src/utils/diagnostics.js` | Token dump, nesting depth, trivia visualiser, REPL. Exposed via the `lexdiag` bin. |
+| `src/utils/diagnostics.js` | Token dump, nesting depth, trivia visualiser, REPL. Run via `yarn diag`. |
 | `.github/workflows/scripts/genTree.js` | Writes an ASCII directory map to STDOUT **and** updates / stages `fileStructure.txt`. |
 | `src/utils/checkCoverage.js` | Parses **coverage/clover.xml** and throws if total statement coverage < threshold (default 90 %). |
 ### How the agent should call them
@@ -82,3 +82,8 @@ yarn tree
 
 # spot-check a lexer rule you’re editing
 yarn diag "html`<h1>${name}</h1>`"
+
+## ⚝ Next Steps 
+* We are transitioning the test modules from JS over to TS until it is complete.
+* Convert as many JS modules as possible.
+* Provide a percentage of Modules successfully converted to TS for this entire project at the end of your run.

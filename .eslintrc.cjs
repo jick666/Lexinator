@@ -17,5 +17,7 @@ module.exports = {
     "indent": ["warn", 2],
     "no-trailing-spaces": "warn",
     "eol-last": ["warn", "always"],
+    "no-multi-spaces": "warn",
+    "no-multiple-empty-lines": ["warn", { "max": 1 }],
   },
 };
