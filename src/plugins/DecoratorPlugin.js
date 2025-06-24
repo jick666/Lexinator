@@ -1,8 +1,4 @@
 import { TSDecoratorReader } from './common/TSDecoratorReader.js';
+import { createPlugin } from './pluginUtils.js';
 
-export const DecoratorPlugin = {
-  modes: { default: [TSDecoratorReader] },
-  init() {
-    // plugin hook for future engine tweaks
-  }
-};
+export const DecoratorPlugin = createPlugin([TSDecoratorReader]);
