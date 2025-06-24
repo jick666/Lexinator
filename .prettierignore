@@ -11,3 +11,15 @@ yarn.lock
 # Git directories
 .git
 .github/workflows/ci.yml
+
+src
+tests
+docs
+README.md
+AGENTS.md
+.eslintrc.cjs
+commitlint.config.js
+jest.config.cjs
+.github/workflows/scripts
+.prettierrc
+.yarnrc.yml
