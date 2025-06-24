@@ -124,3 +124,16 @@ export function consumeKeyword(stream, kw, { checkPrev = true } = {}) {
   if (/[A-Za-z0-9_$]/.test(stream.current() || '')) { stream.setPosition(mark); return null; }
   return stream.getPosition();
 }
+
+/** Create an identifier reader with common logic */
+export function makeIdentifierReader({ unicode = false, allowEscape = false, bailASCII = false } = {}) {
+  return function identifierReader(stream, factory) {
+    if (bailASCII && (stream.current() === null || stream.current().charCodeAt(0) < 128)) {
+      return null;
+    }
+    const start = stream.getPosition();
+    const value = consumeIdentifierLike(stream, { unicode, allowEscape });
+    if (value === null) return null;
+    return factory('IDENTIFIER', value, start, stream.getPosition());
+  };
+}
