@@ -6,7 +6,8 @@
 
 > **Note**: The repository uses Yarn as the sole package manager.
 
-*Modular, incremental&hairsp;/&hairsp;buffered JavaScript lexer with experiment-grade plug-ability.*
+*Modular, incremental&hairsp;/&hairsp;buffered lexer with experiment-grade plug-ability.*
+> **Note**: JavaScript builds are being phased out. Lexinator is now developed and distributed as a TypeScript-only package.
 
 ---
 
@@ -18,6 +19,7 @@
 - **≥ 90 % test coverage** – enforced in CI; current coverage is 100 %.
 - **Bench regression guard** – fails CI if the lexer slows by > 10 %.
 - **Written in TypeScript** – all source modules are implemented in TypeScript.
+- **JavaScript support deprecated** – future releases will ship TypeScript-only builds.
 
 ## Requirements
 
