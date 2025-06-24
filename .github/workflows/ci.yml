@@ -115,7 +115,7 @@ jobs:
       - run: yarn install --immutable --frozen-lockfile
         name: Install dependencies
 
-      - run: node --expose-gc tests/benchmarks/lexer.bench.js > bench.json
+      - run: node --expose-gc tests/benchmarks/realworld.bench.js > bench.json
         name: Run benchmark
 
       - name: Download previous baseline

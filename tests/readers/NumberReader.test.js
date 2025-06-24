@@ -1,4 +1,4 @@
-import { NumberReader } from "../../src/lexer/NumberReader.js";
+import { NumberReader } from "../../src/lexer/number/NumberReader.js";
 import { expectToken, expectNull } from "../utils/readerTestUtils.js";
 
 test("NumberReader reads integer and decimal", () => {

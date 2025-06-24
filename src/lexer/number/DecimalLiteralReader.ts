@@ -1,6 +1,18 @@
-import { readNumberLiteral, isDigit } from './utils.js';
+import type { CharStream } from '../CharStream.js';
+import type { Token } from '../Token.js';
+import { readNumberLiteral, isDigit } from '../utils.js';
 
-export function DecimalLiteralReader(stream, factory) {
+export type TokenFactory = (
+  type: string,
+  value: string,
+  start: any,
+  end: any
+) => Token;
+
+export function DecimalLiteralReader(
+  stream: CharStream,
+  factory: TokenFactory
+): Token | null {
   const startPos = stream.getPosition();
   let ch = stream.current();
 
