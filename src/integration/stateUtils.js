@@ -5,10 +5,18 @@
 //   'tail'           – keep only yet-to-lex tail
 //   'none'           – keep no source (caller must supply it on restore)
 
+function tokensToJSON(tokens) {
+  return tokens.map(t => t.toJSON());
+}
+
+function tokensFromJSON(arr, Token) {
+  return arr.map(t => new Token(t.type, t.value, t.start, t.end, t.sourceURL));
+}
+
 export function serializeEngine(engine) {
   return {
     stateStack:               [...engine.stateStack],
-    buffer:                   engine.buffer.map(t => t.toJSON()),
+    buffer:                   tokensToJSON(engine.buffer),
     disableJsx:               engine.disableJsx,
     lastToken:                engine.lastToken ? engine.lastToken.toJSON() : null,
     errorRecovery:            engine.errorRecovery,
@@ -19,17 +27,10 @@ export function serializeEngine(engine) {
 
 export function deserializeEngine(engine, data, Token) {
   engine.stateStack = [...data.stateStack];
-  engine.buffer = data.buffer.map(
-    t => new Token(t.type, t.value, t.start, t.end, t.sourceURL)
-  );
+  engine.buffer = tokensFromJSON(data.buffer, Token);
   engine.disableJsx = data.disableJsx;
   engine.lastToken = data.lastToken
-    ? new Token(
-        data.lastToken.type,
-        data.lastToken.value,
-        data.lastToken.start,
-        data.lastToken.end,
-        data.lastToken.sourceURL)
+    ? tokensFromJSON([data.lastToken], Token)[0]
     : null;
   engine.errorRecovery            = data.errorRecovery;
   engine.validateUnicodeProperties= data.validateUnicodeProperties ?? false;
@@ -44,8 +45,8 @@ export function saveState(instance, includeTrivia = false) {
   const out = {
     sourceURL: stream.sourceURL,
     position:  pos,
-    tokens:    instance.tokens.map(t => t.toJSON()),
-    ...(includeTrivia ? { trivia: instance.trivia.map(t => t.toJSON()) } : {}),
+    tokens:    tokensToJSON(instance.tokens),
+    ...(includeTrivia ? { trivia: tokensToJSON(instance.trivia) } : {}),
     engine:    serializeEngine(engine)
   };
 
@@ -95,12 +96,8 @@ export function restoreState(instance,
   });
   deserializeEngine(instance.engine, state.engine, Token);
 
-  instance.tokens = state.tokens.map(
-    t => new Token(t.type, t.value, t.start, t.end, t.sourceURL)
-  );
+  instance.tokens = tokensFromJSON(state.tokens, Token);
   if (includeTrivia) {
-    instance.trivia = state.trivia.map(
-      t => new Token(t.type, t.value, t.start, t.end, t.sourceURL)
-    );
+    instance.trivia = tokensFromJSON(state.trivia, Token);
   }
 }
