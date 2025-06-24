@@ -1,3 +1,5 @@
+import { consumeKeyword } from './utils.js';
+
 export function ModuleBlockReader(stream, factory, engine) {
   const startPos = stream.getPosition();
 
@@ -18,20 +20,12 @@ export function ModuleBlockReader(stream, factory, engine) {
     }
   }
 
-  if (!stream.input.startsWith('module', stream.index)) return null;
-
-  const savedPos = stream.getPosition();
-  for (const ch of 'module') {
-    if (stream.current() !== ch) {
-      stream.setPosition(savedPos);
-      return null;
-    }
-    stream.advance();
-  }
+  const kwEnd = consumeKeyword(stream, 'module');
+  if (!kwEnd) return null;
 
   const next = stream.current();
   if (next !== '{' && !(/\s/.test(next))) {
-    stream.setPosition(savedPos);
+    stream.setPosition(startPos);
     return null;
   }
 
@@ -40,7 +34,7 @@ export function ModuleBlockReader(stream, factory, engine) {
   }
 
   if (stream.current() !== '{') {
-    stream.setPosition(savedPos);
+    stream.setPosition(startPos);
     return null;
   }
 
