@@ -13,8 +13,8 @@
 │   ├── grammar
 │   │   ├── JavaScriptGrammar.js
 │   │   └── JavaScriptGrammar.ts
-│   ├── index.js
 │   ├── index.ts
+│   ├── index.js
 │   ├── integration
 │   │   ├── BaseIncrementalLexer.js
 │   │   ├── BaseIncrementalLexer.ts
@@ -118,8 +118,8 @@
 │   │   │   └── RadixReader.ts
 │   │   ├── utils.js
 │   │   └── utils.ts
-│   ├── pluginManager.js
 │   ├── pluginManager.ts
+│   ├── pluginManager.js
 │   ├── plugins
 │   │   ├── DecoratorPlugin.js
 │   │   ├── DecoratorPlugin.ts
