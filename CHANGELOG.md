@@ -7,3 +7,4 @@
 - Package main now points to built TypeScript output
 - Fully migrated source and tests to TypeScript
 - Converted remaining reader tests to TypeScript
+- Disabled allowJs to enforce TypeScript-only sources

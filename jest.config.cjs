@@ -11,10 +11,10 @@ module.exports = {
     '^(\\.{1,2}/.*)\\.js$': '$1'
   },
   collectCoverageFrom: [
-    'src/index.js',
-    'src/pluginManager.js',
-    'src/utils/**/*.js',
-    'src/plugins/**/*.js'
+    'src/index.ts',
+    'src/pluginManager.ts',
+    'src/utils/**/*.ts',
+    'src/plugins/**/*.ts'
   ],
   coverageDirectory: 'coverage'
 };
