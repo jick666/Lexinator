@@ -24,3 +24,17 @@ test('tail policy stores tail and restores correctly', () => {
   restoreState(restored, state);
   expect(restored.stream.input).toBe('llo');
 });
+
+test('stateInput none requires input on restore', () => {
+  const stream = new CharStream('xyz');
+  const engine = new LexerEngine(stream);
+  engine.stateInput = 'none';
+  const instance = { stream, engine, tokens: [], trivia: [], _deps: { CharStream, LexerEngine, Token } };
+  const state = saveState(instance);
+
+  const restored = { _deps: { CharStream, LexerEngine, Token } };
+  expect(() => restoreState(restored, state)).toThrow('no source text');
+
+  restoreState(restored, state, false, { input: 'xyz' });
+  expect(restored.stream.input).toBe('xyz');
+});
