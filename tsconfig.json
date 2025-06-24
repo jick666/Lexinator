@@ -16,7 +16,8 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "newLine": "lf"
+    "newLine": "lf",
+    "types": ["jest"]
   },
   "include": ["src/**/*"]
 }
