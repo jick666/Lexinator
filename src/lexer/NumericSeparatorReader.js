@@ -1,4 +1,4 @@
-import { readDigitsWithUnderscores, isDigit } from './utils.js';
+import { readDigitsWithUnderscores, finalizeUnderscoredDigits, isDigit } from './utils.js';
 
 export function NumericSeparatorReader(stream, factory) {
   const startPos = stream.getPosition();
@@ -7,12 +7,8 @@ export function NumericSeparatorReader(stream, factory) {
 
   const result = readDigitsWithUnderscores(stream, startPos);
   if (!result) return null;
-  const { value, underscoreSeen, lastUnderscore } = result;
-
-  if (!underscoreSeen || lastUnderscore) {
-    stream.setPosition(startPos);
-    return null;
-  }
+  const value = finalizeUnderscoredDigits(stream, startPos, result, { require: true });
+  if (value === null) return null;
 
   const endPos = stream.getPosition();
   return factory('NUMBER', value, startPos, endPos);

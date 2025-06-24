@@ -93,6 +93,19 @@ export function readDigitsWithUnderscores(stream, mark) {
   return { value: join(buf), underscoreSeen, lastUnderscore };
 }
 
+/** Validate underscore usage for numeric literals */
+export function finalizeUnderscoredDigits(
+  stream,
+  mark,
+  { value, underscoreSeen, lastUnderscore },
+  { require = false } = {}
+) {
+  if (lastUnderscore) { stream.setPosition(mark); return null; }
+  if (underscoreSeen && value.startsWith('_')) { stream.setPosition(mark); return null; }
+  if (require && !underscoreSeen) { stream.setPosition(mark); return null; }
+  return value;
+}
+
 export function readDigits(stream) {
   const buf = [];
   while (isDigit(stream.current())) { buf.push(stream.current()); stream.advance(); }

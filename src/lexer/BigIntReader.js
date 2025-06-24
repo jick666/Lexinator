@@ -1,4 +1,4 @@
-import { readDigitsWithUnderscores, isDigit } from './utils.js';
+import { readDigitsWithUnderscores, finalizeUnderscoredDigits, isDigit } from './utils.js';
 
 export function BigIntReader(stream, factory) {
   const startPos = stream.getPosition();
@@ -14,18 +14,9 @@ export function BigIntReader(stream, factory) {
 
   const result = readDigitsWithUnderscores(stream, startPos);
   if (!result) return null;
-  let { value, underscoreSeen, lastUnderscore } = result;
+  let value = finalizeUnderscoredDigits(stream, startPos, result);
+  if (value === null) return null;
   ch = stream.current();
-
-  if (lastUnderscore) {
-    stream.setPosition(startPos);
-    return null;
-  }
-
-  if (underscoreSeen && value.startsWith('_')) {
-    stream.setPosition(startPos);
-    return null;
-  }
 
   if (ch !== 'n') {
     stream.setPosition(startPos);
