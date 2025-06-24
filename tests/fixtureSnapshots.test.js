@@ -4,7 +4,11 @@ import { fileURLToPath } from 'url';
 import { tokenize } from '../src/index.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const FIXTURES = ['lexer_engine.js', 'template_string_reader.js'];
+const FIXTURES = [
+  'lexer_engine.js',
+  'template_string_reader.js',
+  'multi_language_combo.txt',
+];
 const FIXTURE_DIR = path.join(__dirname, 'fixtures');
 
 describe('fixture snapshots', () => {

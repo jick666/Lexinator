@@ -1,0 +1,8 @@
+export function Component({ name }) {
+  const regex = /<tag>/;
+  return (
+    <div className={regex.test(name) ? 'match' : 'nomatch'}>
+      {`Hello ${name ?? 'World'}`}
+    </div>
+  );
+}
