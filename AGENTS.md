@@ -88,4 +88,9 @@ yarn diag "html`<h1>${name}</h1>`"
 
 ## ⚝ Next Steps 
 
-* Gradually tighten up the workflow with TS, ESLint, & Prettier for an overall better environment, and a better quality code.
+* Update README.md for:
+   [![CI](https://github.com/jick666/Lexinator/actions/workflows/ci.yml/badge.svg)](https://github.com/jick666/Lexinator/actions)
+   [![coverage ≥ 90%](https://img.shields.io/badge/coverage-90%2B-brightgreen)](./coverage)
+   [![npm v](https://img.shields.io/npm/v/lexinator?logo=npm)](https://www.npmjs.com/package/lexinator)
+  To accurately reflect the current status of this package.
+* Starting Phasing out JS, ensuring this package is solely functional on TS.
