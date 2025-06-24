@@ -1,12 +1,7 @@
 // src/lexer/UnicodeWhitespaceReader.js
 
+import { createWhitespaceReader } from './utils.js';
+
 const WS_RE = /\p{White_Space}/u;
 
-export function UnicodeWhitespaceReader(stream, factory) {
-  const start = stream.getPosition();
-  if (!WS_RE.test(stream.current() || '')) return null;
-
-  const buf = [];
-  while (!stream.eof() && WS_RE.test(stream.current())) { buf.push(stream.current()); stream.advance(); }
-  return factory('WHITESPACE', buf.join(''), start, stream.getPosition());
-}
+export const UnicodeWhitespaceReader = createWhitespaceReader(ch => WS_RE.test(ch || ''));
