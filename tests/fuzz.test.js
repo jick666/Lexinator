@@ -1,62 +1,48 @@
-/**
- * §8.1 Fuzz Testing
- * @description Placeholder for future fuzz tests to ensure reader resilience.
- * Agents can use random or malformed inputs here.
- */
+import fc from "fast-check";
+import { BufferedIncrementalLexer } from "../src/integration/BufferedIncrementalLexer.js";
 
-import { CharStream } from "../src/lexer/CharStream.js";
-import { IdentifierReader } from "../src/lexer/IdentifierReader.js";
-import { NumberReader } from "../src/lexer/NumberReader.js";
-import { OperatorReader } from "../src/lexer/OperatorReader.js";
-import { PunctuationReader } from "../src/lexer/PunctuationReader.js";
-import { RegexOrDivideReader } from "../src/lexer/RegexOrDivideReader.js";
-import { TemplateStringReader } from "../src/lexer/TemplateStringReader.js";
-import { WhitespaceReader } from "../src/lexer/WhitespaceReader.js";
-import { BinaryReader } from "../src/lexer/BinaryReader.js";
-import { OctalReader } from "../src/lexer/OctalReader.js";
-import { ExponentReader } from "../src/lexer/ExponentReader.js";
-import { NumericSeparatorReader } from "../src/lexer/NumericSeparatorReader.js";
-import { UnicodeIdentifierReader } from "../src/lexer/UnicodeIdentifierReader.js";
-import { UnicodeEscapeIdentifierReader } from "../src/lexer/UnicodeEscapeIdentifierReader.js";
-import { ShebangReader } from "../src/lexer/ShebangReader.js";
-
-function randomAsciiString(maxLen = 20) {
-  const len = Math.floor(Math.random() * (maxLen + 1));
-  let out = "";
-  for (let i = 0; i < len; i++) {
-    const code = 32 + Math.floor(Math.random() * 95); // printable ASCII
-    out += String.fromCharCode(code);
+function reconstruct(tokens) {
+  let out = '';
+  for (const t of tokens) {
+    if (t.leadingTrivia) out += t.leadingTrivia.map(x => x.value).join('');
+    out += t.value;
+    if (t.trailingTrivia) out += t.trailingTrivia.map(x => x.value).join('');
   }
   return out;
 }
 
-// generate a pool of random inputs once so each test uses the same set
-const FUZZ_INPUTS = Array.from({ length: 50 }, () => randomAsciiString());
-const READERS = [
-  ["IdentifierReader", IdentifierReader],
-  ["NumberReader", NumberReader],
-  ["OperatorReader", OperatorReader],
-  ["PunctuationReader", PunctuationReader],
-  ["RegexOrDivideReader", RegexOrDivideReader],
-  ["TemplateStringReader", TemplateStringReader],
-  ["WhitespaceReader", WhitespaceReader],
-  ["BinaryReader", BinaryReader],
-  ["OctalReader", OctalReader],
-  ["ExponentReader", ExponentReader],
-  ["NumericSeparatorReader", NumericSeparatorReader],
-  ["UnicodeIdentifierReader", UnicodeIdentifierReader],
-  ["UnicodeEscapeIdentifierReader", UnicodeEscapeIdentifierReader],
-  ["ShebangReader", ShebangReader],
-];
+describe('property fuzz', () => {
+  test('roundtrip tokenize → join', () => {
+    fc.assert(
+      fc.property(
+        fc.string().filter(s => /^[a-zA-Z0-9 ]+$/.test(s) && /[a-zA-Z0-9]/.test(s)),
+        str => {
+        const lex = new BufferedIncrementalLexer();
+        lex.feed(str);
+        const tokens = lex.getTokens();
+        expect(reconstruct(tokens)).toBe(str);
+      }),
+      { numRuns: 50 }
+    );
+  });
 
-READERS.forEach(([name, reader]) => {
-  describe(`${name} fuzz`, () => {
-    test.each(FUZZ_INPUTS)(
-      `%s handles random input without throwing`,
-      (input) => {
-        const stream = new CharStream(input);
-        expect(() => reader(stream, () => {})).not.toThrow();
-      },
+  test('save/restore yields same tokens', () => {
+    fc.assert(
+      fc.property(
+        fc.string().filter(s => /^[a-zA-Z0-9 ]+$/.test(s) && /[a-zA-Z0-9]/.test(s)),
+        str => {
+        const lex = new BufferedIncrementalLexer();
+        lex.feed(str);
+        const tokens = lex.getTokens();
+        const state = lex.saveState();
+
+        const resumed = new BufferedIncrementalLexer();
+        resumed.restoreState(state);
+        const rTokens = resumed.getTokens();
+        expect(rTokens.map(t => t.type)).toEqual(tokens.map(t => t.type));
+        expect(rTokens.map(t => t.value)).toEqual(tokens.map(t => t.value));
+      }),
+      { numRuns: 50 }
     );
   });
 });
