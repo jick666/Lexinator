@@ -1,14 +1,9 @@
 // src/lexer/PipelineOperatorReader.js
 
-export function PipelineOperatorReader(stream, factory) {
-  const startPos = stream.getPosition();
+import { createLiteralReader } from './readerFactory.js';
 
-  // “|>” must be contiguous – no whitespace is permitted inside the token.
-  if (stream.current() === '|' && stream.peek() === '>') {
-    stream.advance(); // '|'
-    stream.advance(); // '>'
-    const endPos = stream.getPosition();
-    return factory('PIPELINE_OPERATOR', '|>', startPos, endPos);
-  }
-  return null;
-}
+// “|>” must be contiguous – no whitespace is permitted inside the token.
+export const PipelineOperatorReader = createLiteralReader(
+  'PIPELINE_OPERATOR',
+  '|>'
+);
