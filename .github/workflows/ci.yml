@@ -187,7 +187,7 @@ jobs:
       - run: yarn install --production --immutable
         name: Install production dependencies
 
-      - run: yarn semantic-release
+      - run: npx -y semantic-release
         name: Semantic Release
 
       - name: Upload new bench baseline
