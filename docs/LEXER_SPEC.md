@@ -92,16 +92,16 @@ Each is a pure function `(stream, factory) => Token|null`:
 - When `errorRecovery` is enabled, malformed sequences emit `ERROR_TOKEN` placeholders instead of throwing.
 
 ## 11. Usage Examples <a name="examples"></a>
-Run the CLI directly:
+Run the CLI directly after building:
 ```bash
-node index.js "let x = 5;" --verbose
+node dist/index.js "let x = 5;" --verbose
 ```
 This prints each token and returns an array like:
 `[KEYWORD, IDENTIFIER, OPERATOR, NUMBER, PUNCTUATION]`.
 
 Programmatic usage via the exported `tokenize` function:
 ```javascript
-import { tokenize } from "./index.js";
+import { tokenize } from "./index.ts";
 const tokens = tokenize("const a = /re/g;");
 ```
 `tokens` is an array of `Token` objects. Setting `{ verbose: true }` logs tokens as they are produced. Custom readers may be added by pushing to `LexerEngine.modes.default` before tokenization.
@@ -113,7 +113,7 @@ that emits each token object. This is useful for editor integrations that rely
 on streaming lexers.
 
 ```javascript
-import { createTokenStream } from '../index.js';
+import { createTokenStream } from '../index.ts';
 const stream = createTokenStream('let x = 1;');
 stream.on('data', token => {
   console.log(token.type);
@@ -125,7 +125,7 @@ Plugins extend the lexer with additional readers. Register them via
 `registerPlugin` before creating a lexer instance.
 
 ```javascript
-import { registerPlugin } from '../src/pluginManager.js';
+import { registerPlugin } from '../src/pluginManager.ts';
 import { HashPlugin } from './hash-plugin.js';
 
 registerPlugin(HashPlugin);
