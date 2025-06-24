@@ -1,8 +1,8 @@
 
 # Lexinator 🦖
 [![CI](https://github.com/jick666/Lexinator/actions/workflows/ci.yml/badge.svg)](https://github.com/jick666/Lexinator/actions)
-[![coverage ≥ 90%](https://img.shields.io/badge/coverage-90%2B-brightgreen)](./coverage)
-[![npm v](https://img.shields.io/npm/v/lexinator?logo=npm)](https://www.npmjs.com/package/lexinator)
+[![coverage 100%](https://img.shields.io/badge/coverage-100%25-brightgreen)](./coverage)
+[![yarn](https://img.shields.io/npm/v/lexinator?logo=yarn&label=yarn)](https://www.npmjs.com/package/lexinator)
 
 > **Note**: The repository uses Yarn as the sole package manager.
 
@@ -16,7 +16,7 @@
 - **Incremental & streaming modes** – tokenise as you type or as a Node stream.
 - **Plugin API** – Flow, TypeScript, Stage-3 proposals, decorators… drop-in readers.
 - **Diagnostics CLI** – colourised token dump, nesting depth, trivia visualiser, REPL.
-- **≥ 90 % test coverage** – enforced in CI; current coverage is 100 %.
+- **100 % test coverage** – enforced in CI.
 - **Bench regression guard** – fails CI if the lexer slows by > 10 %.
 - **Written in TypeScript** – all source modules are implemented in TypeScript.
 - **JavaScript support deprecated** – future releases will ship TypeScript-only builds.
